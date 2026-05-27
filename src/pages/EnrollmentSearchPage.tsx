@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
-import { enrollmentApi } from '../api/enrollment';
-import type { StudentSearchItem } from '../api/enrollment';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { StatusBadge } from '../components/ui/StatusBadge';
+import { enrollmentApi } from '../entities/student/api/enrollment';
+import type { StudentSearchItem } from '../entities/student/api/enrollment';
+import { Button } from '../shared/ui/atoms/Button';
+import { Input } from '../shared/ui/atoms/Input';
+import { StatusBadge } from '../shared/ui/atoms/StatusBadge';
 
 export const EnrollmentSearch: React.FC = () => {
   const navigate = useNavigate();

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, User, FileText, DollarSign, Check, Edit, AlertTriangle } from 'lucide-react';
-import { enrollmentApi } from '../api/enrollment';
-import type { StudentBalance } from '../api/enrollment';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { StatusBadge } from '../components/ui/StatusBadge';
-import { Modal } from '../components/ui/Modal';
+import { enrollmentApi } from '../entities/student/api/enrollment';
+import type { StudentBalance } from '../entities/student/api/enrollment';
+import { Button } from '../shared/ui/atoms/Button';
+import { Input } from '../shared/ui/atoms/Input';
+import { StatusBadge } from '../shared/ui/atoms/StatusBadge';
+import { Modal } from '../shared/ui/molecules/Modal';
 
 export const EnrollmentDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();

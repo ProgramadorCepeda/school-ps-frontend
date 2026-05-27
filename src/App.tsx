@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AppLayout } from './components/layout/AppLayout';
-import { EnrollmentSearch } from './pages/EnrollmentSearch';
-import { EnrollmentDetail } from './pages/EnrollmentDetail';
+import { AppLayout } from './shared/ui/templates/AppLayout';
+import { EnrollmentSearch } from './pages/EnrollmentSearchPage';
+import { EnrollmentDetail } from './pages/EnrollmentDetailPage';
 import './index.css';
 
 function App() {
