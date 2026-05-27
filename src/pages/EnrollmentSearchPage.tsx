@@ -16,10 +16,22 @@ export const EnrollmentSearch: React.FC = () => {
 
   // Fetch initial data
   useEffect(() => {
-    handleSearch();
+    const fetchInitialData = async () => {
+      setLoading(true);
+      try {
+        const data = await enrollmentApi.searchStudents({});
+        setStudents(data.estudiantes);
+        setSelectedStudent(null);
+      } catch (error) {
+        console.error('Error fetching students:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    void fetchInitialData();
   }, []);
 
-  const handleSearch = async (e?: React.FormEvent) => {
+  const handleSearch = async (e?: React.SyntheticEvent) => {
     if (e) e.preventDefault();
     setLoading(true);
     try {
@@ -27,15 +39,7 @@ export const EnrollmentSearch: React.FC = () => {
         documento: filters.documento,
         nombre: filters.nombre
       });
-      // The backend returns { estudiantes: [...], total_resultados: X } or just the array depending on the API. 
-      // Based on the schema StudentSearchListResponse, it's an object with `estudiantes` array.
-      if (data.estudiantes) {
-        setStudents(data.estudiantes);
-      } else if (Array.isArray(data)) {
-        setStudents(data);
-      } else {
-        setStudents([]);
-      }
+      setStudents(data.estudiantes);
       setSelectedStudent(null);
     } catch (error) {
       console.error('Error fetching students:', error);
@@ -45,8 +49,8 @@ export const EnrollmentSearch: React.FC = () => {
   };
 
   const handleManage = () => {
-    if (selectedStudent) {
-      navigate(`/student/${selectedStudent}/enrollment`);
+    if (selectedStudent !== null) {
+      void navigate(`/student/${selectedStudent.toString()}/enrollment`);
     }
   };
 
@@ -65,25 +69,25 @@ export const EnrollmentSearch: React.FC = () => {
           Ingrese el código o nombre del estudiante y seleccione una fecha para iniciar la búsqueda
         </div>
         
-        <form onSubmit={handleSearch}>
+        <form onSubmit={(e) => { void handleSearch(e); }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', alignItems: 'end' }}>
             <Input 
               label="Código" 
               placeholder="Ej. 123123" 
               value={filters.documento}
-              onChange={e => setFilters({...filters, documento: e.target.value})}
+              onChange={e => { setFilters({...filters, documento: e.target.value}); }}
             />
             <Input 
               label="Nombre" 
               placeholder="Ej. Juan" 
               value={filters.nombre}
-              onChange={e => setFilters({...filters, nombre: e.target.value})}
+              onChange={e => { setFilters({...filters, nombre: e.target.value}); }}
             />
             <Input 
               label="Fecha" 
               type="date"
               value={filters.date}
-              onChange={e => setFilters({...filters, date: e.target.value})}
+              onChange={e => { setFilters({...filters, date: e.target.value}); }}
             />
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button type="submit" variant="primary" style={{ backgroundColor: '#7f1d1d' }} disabled={loading}>
@@ -116,24 +120,24 @@ export const EnrollmentSearch: React.FC = () => {
               <tr><td colSpan={8} style={{ textAlign: 'center' }}>No se encontraron resultados</td></tr>
             ) : (
               students.map(student => (
-                <tr key={student.estudiante_id} onClick={() => setSelectedStudent(student.estudiante_id)} style={{ cursor: 'pointer' }}>
+                <tr key={student.estudiante_id} onClick={() => { setSelectedStudent(student.estudiante_id); }} style={{ cursor: 'pointer' }}>
                   <td>
                     <input 
                       type="radio" 
                       name="studentSelect" 
                       checked={selectedStudent === student.estudiante_id}
-                      onChange={() => setSelectedStudent(student.estudiante_id)}
+                      onChange={() => { setSelectedStudent(student.estudiante_id); }}
                       style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#1d4ed8' }}
                     />
                   </td>
                   <td>{student.documento}</td>
                   <td style={{ fontWeight: 500 }}>{student.nombre}</td>
                   <td>{student.grado_nombre}</td>
-                  <td>{student.anio}</td>
+                  <td>{student.anio.toString()}</td>
                   <td>
                     <StatusBadge status={student.estado_matricula} />
                   </td>
-                  <td>{student.pagos_realizados}</td>
+                  <td>{student.pagos_realizados.toString()}</td>
                   <td style={{ fontWeight: 600 }}>${student.saldo_pendiente.toLocaleString()}</td>
                 </tr>
               ))
@@ -142,7 +146,7 @@ export const EnrollmentSearch: React.FC = () => {
         </table>
       </div>
 
-      {selectedStudent && (
+      {selectedStudent !== null && (
         <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <p style={{ color: '#1e3a8a', margin: 0 }}>
             Ha seleccionado un estudiante. Puede continuar con la gestión de matrícula.

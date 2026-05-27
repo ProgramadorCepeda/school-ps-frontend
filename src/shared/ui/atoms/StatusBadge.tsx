@@ -3,7 +3,7 @@ import React from 'react';
 export type StatusType = 'sin_abono' | 'parcial' | 'paz_y_salvo' | 'sin_matricula' | 'pendiente' | 'observacion';
 
 interface StatusBadgeProps {
-  status: StatusType | string;
+  status: string;
   label?: string;
 }
 
@@ -30,7 +30,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, label }) => {
 
   return (
     <span className={`badge ${badgeClass}`}>
-      {label || defaultLabel}
+      {label ?? defaultLabel}
     </span>
   );
 };

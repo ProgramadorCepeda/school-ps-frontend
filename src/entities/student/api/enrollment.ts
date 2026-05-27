@@ -13,6 +13,11 @@ export interface StudentSearchItem {
   total_pagado: number;
 }
 
+export interface StudentSearchListResponse {
+  estudiantes: StudentSearchItem[];
+  total_resultados: number;
+}
+
 export interface ComplementaryItem {
   detalle_id: number;
   complementario_id: number;
@@ -46,10 +51,35 @@ export interface StudentBalance {
   matricula_id?: number | null;
 }
 
+export interface PaymentDistribution {
+  concepto: string;
+  complementario_id?: number | null;
+  monto_aplicado: number;
+}
+
+export interface PaymentResultResponse {
+  pago_id: number;
+  codigo_talonario: string;
+  monto_total: number;
+  monto_aplicado: number;
+  distribuciones: PaymentDistribution[];
+  saldo_restante: number;
+  matricula_pagada: boolean;
+  mensaje: string;
+}
+
+export interface ModifyEnrollmentResponse {
+  mensaje: string;
+  matricula_id: number;
+  nuevo_valor_total: number;
+  motivo_registrado: string;
+  observaciones_registradas?: string | null;
+}
+
 const API_BASE = '/api/v1/enrollment';
 
 export const enrollmentApi = {
-  searchStudents: async (params: { documento?: string; nombre?: string; year?: number }) => {
+  searchStudents: async (params: { documento?: string; nombre?: string; year?: number }): Promise<StudentSearchListResponse> => {
     const query = new URLSearchParams();
     if (params.documento) query.append('documento', params.documento);
     if (params.nombre) query.append('nombre', params.nombre);
@@ -57,28 +87,28 @@ export const enrollmentApi = {
 
     const response = await fetch(`${API_BASE}/students?${query.toString()}`);
     if (!response.ok) throw new Error('Error al buscar estudiantes');
-    return response.json();
+    return response.json() as Promise<StudentSearchListResponse>;
   },
 
-  getStudentBalance: async (studentId: number, year: number = new Date().getFullYear()) => {
-    const response = await fetch(`${API_BASE}/students/${studentId}/balance?year=${year}`);
+  getStudentBalance: async (studentId: number, year: number = new Date().getFullYear()): Promise<StudentBalance> => {
+    const response = await fetch(`${API_BASE}/students/${studentId.toString()}/balance?year=${year.toString()}`);
     if (!response.ok) throw new Error('Error al obtener balance');
     return response.json() as Promise<StudentBalance>;
   },
 
   registerDirectedPayment: async (payload: {
     matricula_id: number;
-    asignaciones: Array<{ concepto: string; complementario_id?: number; monto: number }>;
+    asignaciones: { concepto: string; complementario_id?: number; monto: number }[];
     codigo_talonario: string;
     observacion?: string;
-  }) => {
+  }): Promise<PaymentResultResponse> => {
     const response = await fetch(`${API_BASE}/payments/directed`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
     if (!response.ok) throw new Error('Error al registrar el pago');
-    return response.json();
+    return response.json() as Promise<PaymentResultResponse>;
   },
 
   modifyEnrollment: async (
@@ -87,21 +117,21 @@ export const enrollmentApi = {
       motivo: string;
       observaciones?: string;
       nuevo_costo_base?: number;
-      complementarios?: Array<{
+      complementarios?: {
         detalle_id: number;
         nuevo_valor_completo?: number;
-      }>;
+      }[];
     }
-  ) => {
-    const response = await fetch(`${API_BASE}/students/${matriculaId}/matricula`, {
+  ): Promise<ModifyEnrollmentResponse> => {
+    const response = await fetch(`${API_BASE}/students/${matriculaId.toString()}/matricula`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      throw new Error(errData.detail || 'Error al modificar matrícula');
+      const errData = (await response.json().catch(() => ({}))) as { detail?: string };
+      throw new Error(errData.detail ?? 'Error al modificar matrícula');
     }
-    return response.json();
+    return response.json() as Promise<ModifyEnrollmentResponse>;
   }
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, User, FileText, DollarSign, Check, Edit, AlertTriangle } from 'lucide-react';
 import { enrollmentApi } from '../entities/student/api/enrollment';
@@ -26,7 +26,8 @@ export const EnrollmentDetail: React.FC = () => {
   const [editReason, setEditReason] = useState('');
   const [editObs, setEditObs] = useState('');
 
-  const fetchBalance = async () => {
+  const fetchBalance = useCallback(async () => {
+    if (!id) return;
     try {
       setLoading(true);
       const data = await enrollmentApi.getStudentBalance(Number(id));
@@ -35,11 +36,11 @@ export const EnrollmentDetail: React.FC = () => {
       // Inicializar montos a pagar con el total de la deuda por concepto
       const initialAmounts: Record<string, string> = {};
       if (data.pendiente_base > 0) {
-        initialAmounts['matricula_base'] = data.pendiente_base.toString();
+        initialAmounts.matricula_base = data.pendiente_base.toString();
       }
       data.complementarios.forEach(c => {
         if (c.valor_pendiente > 0) {
-          initialAmounts[`comp_${c.complementario_id}`] = c.valor_pendiente.toString();
+          initialAmounts[`comp_${c.complementario_id.toString()}`] = c.valor_pendiente.toString();
         }
       });
       setPaymentAmounts(initialAmounts);
@@ -49,24 +50,29 @@ export const EnrollmentDetail: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
-    if (id) fetchBalance();
-  }, [id]);
+    const timer = setTimeout(() => {
+      void fetchBalance();
+    }, 0);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [fetchBalance]);
 
   const handleAmountChange = (key: string, val: string) => {
     setPaymentAmounts(prev => ({ ...prev, [key]: val }));
   };
 
-  const handlePayment = async (e: React.FormEvent) => {
+  const handlePayment = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!balance || !receiptNumber) return;
 
     try {
       setPaymentLoading(true);
       
-      let asignaciones = [];
+      const asignaciones = [];
       for (const key in paymentAmounts) {
         const monto = Number(paymentAmounts[key]);
         if (monto > 0) {
@@ -85,7 +91,7 @@ export const EnrollmentDetail: React.FC = () => {
         return;
       }
 
-      const matriculaId = balance.matricula_id || balance.estudiante.id;
+      const matriculaId = balance.matricula_id ?? balance.estudiante.id;
 
       await enrollmentApi.registerDirectedPayment({
         matricula_id: matriculaId,
@@ -114,11 +120,11 @@ export const EnrollmentDetail: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleEditSubmit = async (e: React.FormEvent) => {
+  const handleEditSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!balance || !editConcept || !newVal) return;
 
-    const matriculaId = balance.matricula_id || balance.estudiante.id;
+    const matriculaId = balance.matricula_id ?? balance.estudiante.id;
 
     try {
       const parsedValue = parseInt(newVal, 10);
@@ -127,9 +133,17 @@ export const EnrollmentDetail: React.FC = () => {
         return;
       }
 
-      const payload: any = {
+      const payload: {
+        motivo: string;
+        observaciones?: string;
+        nuevo_costo_base?: number;
+        complementarios?: {
+          detalle_id: number;
+          nuevo_valor_completo?: number;
+        }[];
+      } = {
         motivo: editReason,
-        observaciones: editObs || undefined,
+        observaciones: editObs ? editObs : undefined,
       };
 
       if (editConcept.id === 'matricula_base') {
@@ -151,9 +165,10 @@ export const EnrollmentDetail: React.FC = () => {
       setIsEditModalOpen(false);
       await fetchBalance();
       alert("Edición registrada exitosamente");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error modifying enrollment:', error);
-      alert(error.message || "Error al modificar matrícula. Por favor revise el log.");
+      const errMsg = error instanceof Error ? error.message : "Error al modificar matrícula. Por favor revise el log.";
+      alert(errMsg);
     }
   };
 
@@ -172,7 +187,7 @@ export const EnrollmentDetail: React.FC = () => {
   }
   balance.complementarios.forEach(c => {
     if (c.valor_pendiente > 0) {
-      debtItems.push({ id: `comp_${c.complementario_id}`, label: c.tipo_complementario, max: c.valor_pendiente });
+      debtItems.push({ id: `comp_${c.complementario_id.toString()}`, label: c.tipo_complementario, max: c.valor_pendiente });
     }
   });
 
@@ -180,7 +195,7 @@ export const EnrollmentDetail: React.FC = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* Header and navigation */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
-        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500 }}>
+        <button onClick={() => { void navigate(-1); }} style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500 }}>
           <ArrowLeft size={16} /> Volver a búsqueda
         </button>
         <Button variant="outline" size="sm">
@@ -206,11 +221,11 @@ export const EnrollmentDetail: React.FC = () => {
           </div>
           <div>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Período</p>
-            <p style={{ fontWeight: 500 }}>{balance.anio}</p>
+            <p style={{ fontWeight: 500 }}>{balance.anio.toString()}</p>
           </div>
           <div>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Pagos Realizados</p>
-            <p style={{ fontWeight: 500 }}>{balance.pagos_realizados}</p>
+            <p style={{ fontWeight: 500 }}>{balance.pagos_realizados.toString()}</p>
           </div>
           <div>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Estado Actual</p>
@@ -235,7 +250,7 @@ export const EnrollmentDetail: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <p style={{ fontWeight: 600, fontSize: '1.1rem', margin: 0 }}>${balance.costo_base_matricula.toLocaleString()}</p>
               <button 
-                onClick={() => openEditModal('matricula_base', 'Matrícula Base', balance.costo_base_matricula)}
+                onClick={() => { openEditModal('matricula_base', 'Matrícula Base', balance.costo_base_matricula); }}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary)', padding: '4px' }}
               >
                 <Edit size={18} />
@@ -244,7 +259,7 @@ export const EnrollmentDetail: React.FC = () => {
           </div>
 
           {balance.complementarios.map(comp => (
-             <div key={comp.detalle_id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', border: '1px solid var(--border)', borderRadius: '8px', background: '#fff' }}>
+             <div key={comp.detalle_id.toString()} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', border: '1px solid var(--border)', borderRadius: '8px', background: '#fff' }}>
              <div>
                <p style={{ fontWeight: 600, margin: 0 }}>{comp.tipo_complementario}</p>
                <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0 }}>Concepto complementario</p>
@@ -252,7 +267,7 @@ export const EnrollmentDetail: React.FC = () => {
              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <p style={{ fontWeight: 600, fontSize: '1.1rem', margin: 0 }}>${comp.valor_completo.toLocaleString()}</p>
                 <button 
-                  onClick={() => openEditModal(`comp_${comp.complementario_id}`, comp.tipo_complementario, comp.valor_completo, comp.detalle_id)}
+                  onClick={() => { openEditModal(`comp_${comp.complementario_id.toString()}`, comp.tipo_complementario, comp.valor_completo, comp.detalle_id); }}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary)', padding: '4px' }}
                 >
                   <Edit size={18} />
@@ -281,14 +296,14 @@ export const EnrollmentDetail: React.FC = () => {
             <DollarSign size={20} /> Registrar Pago
           </h3>
           
-          <form onSubmit={handlePayment} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <form onSubmit={(e) => { void handlePayment(e); }} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ maxWidth: '300px' }}>
               <Input 
                 label="Número de Tirilla *" 
                 placeholder="Ingrese número de tirilla" 
                 required
                 value={receiptNumber}
-                onChange={e => setReceiptNumber(e.target.value)}
+                onChange={e => { setReceiptNumber(e.target.value); }}
               />
             </div>
             
@@ -301,8 +316,8 @@ export const EnrollmentDetail: React.FC = () => {
                   placeholder="0"
                   min={0}
                   max={item.max}
-                  value={paymentAmounts[item.id] || ''}
-                  onChange={e => handleAmountChange(item.id, e.target.value)}
+                  value={paymentAmounts[item.id] ?? ''}
+                  onChange={e => { handleAmountChange(item.id, e.target.value); }}
                 />
               ))}
             </div>
@@ -318,7 +333,7 @@ export const EnrollmentDetail: React.FC = () => {
       )}
 
       {/* Edit Modal */}
-      <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title="Editar Valor de Matrícula">
+      <Modal isOpen={isEditModalOpen} onClose={() => { setIsEditModalOpen(false); }} title="Editar Valor de Matrícula">
         <div style={{ background: '#fefce8', border: '1px solid #fde047', borderRadius: '8px', padding: '12px', display: 'flex', gap: '12px', marginBottom: '20px' }}>
           <AlertTriangle size={24} color="#a16207" style={{ flexShrink: 0 }} />
           <p style={{ color: '#854d0e', margin: 0, fontSize: '0.875rem' }}>
@@ -326,10 +341,10 @@ export const EnrollmentDetail: React.FC = () => {
           </p>
         </div>
 
-        <form onSubmit={handleEditSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <form onSubmit={(e) => { void handleEditSubmit(e); }} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <Input 
             label="Concepto" 
-            value={editConcept?.name || ''} 
+            value={editConcept?.name ?? ''} 
             disabled 
           />
           <Input 
@@ -342,7 +357,7 @@ export const EnrollmentDetail: React.FC = () => {
             type="number"
             required
             value={newVal}
-            onChange={e => setNewVal(e.target.value)}
+            onChange={e => { setNewVal(e.target.value); }}
           />
           
           <div className="input-container">
@@ -353,7 +368,7 @@ export const EnrollmentDetail: React.FC = () => {
               placeholder="Ingrese el motivo de la edición (obligatorio)"
               required
               value={editReason}
-              onChange={e => setEditReason(e.target.value)}
+              onChange={e => { setEditReason(e.target.value); }}
             />
           </div>
 
@@ -364,12 +379,12 @@ export const EnrollmentDetail: React.FC = () => {
               style={{ minHeight: '60px', padding: '8px 12px' }}
               placeholder="Observaciones adicionales"
               value={editObs}
-              onChange={e => setEditObs(e.target.value)}
+              onChange={e => { setEditObs(e.target.value); }}
             />
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' }}>
-            <Button type="button" variant="secondary" onClick={() => setIsEditModalOpen(false)}>
+            <Button type="button" variant="secondary" onClick={() => { setIsEditModalOpen(false); }}>
               Cancelar
             </Button>
             <Button type="submit" variant="primary" style={{ backgroundColor: '#991b1b' }}>
