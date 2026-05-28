@@ -4,12 +4,12 @@ import { ArrowLeft, User, FileText, Edit } from 'lucide-react';
 import { enrollmentApi } from '../entities/student/api/enrollment';
 import type { StudentBalance } from '../entities/student/api/enrollment';
 import { Button } from '../shared/ui/atoms/Button';
-import { StatusBadge } from '../shared/ui/atoms/StatusBadge';
+import { StatusBadge } from '../entities/student/ui/StatusBadge';
 import { PayEnrollmentForm } from '../features/pay-enrollment/ui/PayEnrollmentForm';
 import { ModifyEnrollmentModal } from '../features/modify-enrollment/ui/ModifyEnrollmentModal';
 
 export const EnrollmentDetail: React.FC = () => {
-  const { id } = useParams({ from: '/student/$id/enrollment' });
+  const { id } = useParams({ from: '/dashboard/student/$id/enrollment' });
   const [balance, setBalance] = useState<StudentBalance | null>(null);
   const [loading, setLoading] = useState(true);
 
