@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useRouterState, Link } from '@tanstack/react-router';
+import { useNavigate, useRouterState, Link, Outlet } from '@tanstack/react-router';
 import { 
   LayoutDashboard, Shield, CreditCard, Calendar, GraduationCap, Sofa, 
   FileText, Dumbbell, Trophy, Coffee, School, Music, Building, 
@@ -12,7 +12,7 @@ interface MainLayoutProps {
   children?: React.ReactNode;
 }
 
-export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+export const MainLayout: React.FC<MainLayoutProps> = () => {
   const navigate = useNavigate();
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
@@ -167,7 +167,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <AppLayout sidebar={sidebar} header={header}>
-      {children}
+      <Outlet />
     </AppLayout>
   );
 };
