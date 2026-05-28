@@ -22,7 +22,7 @@ export const PayEnrollmentForm: React.FC<PayEnrollmentFormProps> = ({
     }
     balance.complementarios.forEach(c => {
       if (c.valor_pendiente > 0) {
-        initialAmounts[`comp_${c.complementario_id.toString()}`] = c.valor_pendiente.toString();
+        initialAmounts[`comp_${c.detalle_id.toString()}`] = c.valor_pendiente.toString();
       }
     });
     return initialAmounts;
@@ -47,8 +47,16 @@ export const PayEnrollmentForm: React.FC<PayEnrollmentFormProps> = ({
           if (key === 'matricula_base') {
             asignaciones.push({ concepto: 'matricula_base', monto });
           } else if (key.startsWith('comp_')) {
-            const compId = Number(key.split('_')[1]);
-            asignaciones.push({ concepto: 'complementario', complementario_id: compId, monto });
+            const detalleId = Number(key.split('_')[1]);
+            const comp = balance.complementarios.find(c => c.detalle_id === detalleId);
+            if (comp) {
+              asignaciones.push({ 
+                concepto: 'complementario', 
+                complementario_id: comp.complementario_id, 
+                detalle_id: comp.detalle_id,
+                monto 
+              });
+            }
           }
         }
       }
@@ -89,7 +97,7 @@ export const PayEnrollmentForm: React.FC<PayEnrollmentFormProps> = ({
   }
   balance.complementarios.forEach(c => {
     if (c.valor_pendiente > 0) {
-      debtItems.push({ id: `comp_${c.complementario_id.toString()}`, label: c.tipo_complementario, max: c.valor_pendiente });
+      debtItems.push({ id: `comp_${c.detalle_id.toString()}`, label: c.tipo_complementario, max: c.valor_pendiente });
     }
   });
 
