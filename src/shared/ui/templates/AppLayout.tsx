@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
+import { Outlet, useNavigate, useRouterState, Link } from '@tanstack/react-router';
 import { 
   LayoutDashboard, Shield, CreditCard, Calendar, GraduationCap, Sofa, 
   FileText, Dumbbell, Trophy, Coffee, School, Music, Building, 
@@ -9,7 +9,8 @@ import type { LoginUser } from '../../../features/auth/api/authApi';
 
 export const AppLayout: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const routerState = useRouterState();
+  const currentPath = routerState.location.pathname;
   
   // Use lazy state initialization to read from localStorage cleanly on mount
   const [currentUser] = useState<LoginUser | null>(() => {
@@ -27,7 +28,7 @@ export const AppLayout: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('auth_user');
-    void navigate('/login');
+    void navigate({ to: '/login' });
   };
 
   const sidebarItems = [
@@ -48,10 +49,10 @@ export const AppLayout: React.FC = () => {
 
   const isItemActive = (itemPath: string) => {
     if (itemPath === '/dashboard') {
-      return location.pathname === '/dashboard';
+      return currentPath === '/dashboard';
     }
     if (itemPath === '/enrollment') {
-      return location.pathname === '/enrollment' || location.pathname.startsWith('/student');
+      return currentPath === '/enrollment' || currentPath.startsWith('/student');
     }
     return false;
   };
@@ -80,7 +81,7 @@ export const AppLayout: React.FC = () => {
             return (
               <Link
                 key={item.path}
-                to={item.path}
+                to={item.path as any}
                 onClick={(e) => { handleItemClick(e, item.path, item.label); }}
                 className={`app-sidebar-item ${active ? 'active' : ''}`}
               >
@@ -100,7 +101,7 @@ export const AppLayout: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div 
               style={{ color: '#801c1c', cursor: 'pointer', display: 'flex', alignItems: 'center' }} 
-              onClick={() => { void navigate('/dashboard'); }}
+              onClick={() => { void navigate({ to: '/dashboard' }); }}
             >
               <X size={20} />
             </div>
