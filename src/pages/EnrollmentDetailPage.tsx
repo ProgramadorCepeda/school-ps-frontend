@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft, User, FileText, Edit } from 'lucide-react';
 import { enrollmentApi } from '../entities/student/api/enrollment';
 import type { StudentBalance } from '../entities/student/api/enrollment';
@@ -9,7 +9,7 @@ import { PayEnrollmentForm } from '../features/pay-enrollment/ui/PayEnrollmentFo
 import { ModifyEnrollmentModal } from '../features/modify-enrollment/ui/ModifyEnrollmentModal';
 
 export const EnrollmentDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams({ from: '/student/$id/enrollment' });
   const navigate = useNavigate();
   const [balance, setBalance] = useState<StudentBalance | null>(null);
   const [loading, setLoading] = useState(true);
@@ -61,7 +61,7 @@ export const EnrollmentDetail: React.FC = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* Header and navigation */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
-        <button onClick={() => { void navigate(-1); }} style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500 }}>
+        <button onClick={() => { window.history.back(); }} style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500 }}>
           <ArrowLeft size={16} /> Volver a búsqueda
         </button>
         <Button variant="outline" size="sm">

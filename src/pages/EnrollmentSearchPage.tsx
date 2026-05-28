@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 import { SearchStudentForm } from '../features/search-student/ui/SearchStudentForm';
 import type { StudentSearchItem } from '../entities/student/api/enrollment';
 import { Button } from '../shared/ui/atoms/Button';
@@ -26,7 +26,7 @@ export const EnrollmentSearch: React.FC = () => {
 
   const handleManage = () => {
     if (selectedStudent !== null) {
-      void navigate(`/student/${selectedStudent.toString()}/enrollment`);
+      void navigate({ to: `/student/${selectedStudent.toString()}/enrollment` });
     }
   };
 
