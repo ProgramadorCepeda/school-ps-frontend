@@ -1,7 +1,10 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
 
-export const AppLayout: React.FC = () => {
+interface AppLayoutProps {
+  children?: React.ReactNode;
+}
+
+export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <header className="layout-header">
@@ -14,7 +17,7 @@ export const AppLayout: React.FC = () => {
       </header>
       
       <main className="container" style={{ flex: 1 }}>
-        <Outlet />
+        {children}
       </main>
     </div>
   );

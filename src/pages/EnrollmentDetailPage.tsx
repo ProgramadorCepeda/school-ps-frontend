@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from '@tanstack/react-router';
+import { useParams } from '@tanstack/react-router';
 import { ArrowLeft, User, FileText, Edit } from 'lucide-react';
 import { enrollmentApi } from '../entities/student/api/enrollment';
 import type { StudentBalance } from '../entities/student/api/enrollment';
@@ -10,7 +10,6 @@ import { ModifyEnrollmentModal } from '../features/modify-enrollment/ui/ModifyEn
 
 export const EnrollmentDetail: React.FC = () => {
   const { id } = useParams({ from: '/student/$id/enrollment' });
-  const navigate = useNavigate();
   const [balance, setBalance] = useState<StudentBalance | null>(null);
   const [loading, setLoading] = useState(true);
 

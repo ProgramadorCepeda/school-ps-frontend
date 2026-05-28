@@ -9,9 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './app/router/__root'
+import { Route as EnrollmentRouteImport } from './app/router/enrollment'
 import { Route as IndexRouteImport } from './app/router/index'
 import { Route as DashboardBandIndexRouteImport } from './app/router/dashboard/band/index'
+import { Route as StudentIdEnrollmentRouteImport } from './app/router/student/$id/enrollment'
 
+const EnrollmentRoute = EnrollmentRouteImport.update({
+  id: '/enrollment',
+  path: '/enrollment',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -22,35 +29,64 @@ const DashboardBandIndexRoute = DashboardBandIndexRouteImport.update({
   path: '/dashboard/band/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentIdEnrollmentRoute = StudentIdEnrollmentRouteImport.update({
+  id: '/student/$id/enrollment',
+  path: '/student/$id/enrollment',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/enrollment': typeof EnrollmentRoute
+  '/student/$id/enrollment': typeof StudentIdEnrollmentRoute
   '/dashboard/band/': typeof DashboardBandIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/enrollment': typeof EnrollmentRoute
+  '/student/$id/enrollment': typeof StudentIdEnrollmentRoute
   '/dashboard/band': typeof DashboardBandIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/enrollment': typeof EnrollmentRoute
+  '/student/$id/enrollment': typeof StudentIdEnrollmentRoute
   '/dashboard/band/': typeof DashboardBandIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard/band/'
+  fullPaths:
+    | '/'
+    | '/enrollment'
+    | '/student/$id/enrollment'
+    | '/dashboard/band/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard/band'
-  id: '__root__' | '/' | '/dashboard/band/'
+  to: '/' | '/enrollment' | '/student/$id/enrollment' | '/dashboard/band'
+  id:
+    | '__root__'
+    | '/'
+    | '/enrollment'
+    | '/student/$id/enrollment'
+    | '/dashboard/band/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EnrollmentRoute: typeof EnrollmentRoute
+  StudentIdEnrollmentRoute: typeof StudentIdEnrollmentRoute
   DashboardBandIndexRoute: typeof DashboardBandIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/enrollment': {
+      id: '/enrollment'
+      path: '/enrollment'
+      fullPath: '/enrollment'
+      preLoaderRoute: typeof EnrollmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -65,11 +101,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBandIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/student/$id/enrollment': {
+      id: '/student/$id/enrollment'
+      path: '/student/$id/enrollment'
+      fullPath: '/student/$id/enrollment'
+      preLoaderRoute: typeof StudentIdEnrollmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EnrollmentRoute: EnrollmentRoute,
+  StudentIdEnrollmentRoute: StudentIdEnrollmentRoute,
   DashboardBandIndexRoute: DashboardBandIndexRoute,
 }
 export const routeTree = rootRouteImport
