@@ -35,7 +35,7 @@ export const SearchStudentForm: React.FC<SearchStudentFormProps> = ({
     }
   }, [filters.documento, filters.nombre, onSearchStart, onSearchEnd, onSearchSuccess]);
 
-  // Fetch initial data
+  // Fetch initial data on mount
   useEffect(() => {
     const timer = setTimeout(() => {
       void executeSearch(true);
@@ -43,7 +43,8 @@ export const SearchStudentForm: React.FC<SearchStudentFormProps> = ({
     return () => {
       clearTimeout(timer);
     };
-  }, [executeSearch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps, react-x/exhaustive-deps
+  }, []);
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();

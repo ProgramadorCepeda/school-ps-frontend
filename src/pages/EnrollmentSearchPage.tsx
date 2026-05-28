@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { SearchStudentForm } from '../features/search-student/ui/SearchStudentForm';
 import type { StudentSearchItem } from '../entities/student/api/enrollment';
@@ -11,24 +11,24 @@ export const EnrollmentSearch: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<number | null>(null);
 
-  const handleSearchStart = () => {
+  const handleSearchStart = useCallback(() => {
     setLoading(true);
-  };
+  }, []);
 
-  const handleSearchEnd = () => {
+  const handleSearchEnd = useCallback(() => {
     setLoading(false);
-  };
+  }, []);
 
-  const handleSearchSuccess = (results: StudentSearchItem[]) => {
+  const handleSearchSuccess = useCallback((results: StudentSearchItem[]) => {
     setStudents(results);
     setSelectedStudent(null);
-  };
+  }, []);
 
-  const handleManage = () => {
+  const handleManage = useCallback(() => {
     if (selectedStudent !== null) {
       void navigate({ to: `/dashboard/student/${selectedStudent.toString()}/enrollment` });
     }
-  };
+  }, [navigate, selectedStudent]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
