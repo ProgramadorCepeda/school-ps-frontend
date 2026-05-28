@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 import { 
   CreditCard, Calendar, GraduationCap, Sofa, FileText, 
   Dumbbell, Trophy, Coffee, School, Music, Building,
@@ -114,7 +114,7 @@ export const DashboardPage: React.FC = () => {
 
   const handleModuleClick = (moduleId: string) => {
     if (moduleId === 'matricula') {
-      void navigate('/enrollment');
+      void navigate({ to: '/enrollment' });
     } else {
       alert(`El módulo "${moduleId.toUpperCase()}" se encuentra en desarrollo por otro equipo.`);
     }

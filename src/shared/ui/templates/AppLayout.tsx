@@ -81,7 +81,7 @@ export const AppLayout: React.FC = () => {
             return (
               <Link
                 key={item.path}
-                to={item.path as any}
+                to={item.path}
                 onClick={(e) => { handleItemClick(e, item.path, item.label); }}
                 className={`app-sidebar-item ${active ? 'active' : ''}`}
               >

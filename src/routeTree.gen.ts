@@ -9,14 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './app/router/__root'
-import { Route as EnrollmentRouteImport } from './app/router/enrollment'
+import { Route as LoginRouteImport } from './app/router/login'
+import { Route as LayoutRouteImport } from './app/router/_layout'
 import { Route as IndexRouteImport } from './app/router/index'
+import { Route as LayoutEnrollmentRouteImport } from './app/router/_layout.enrollment'
+import { Route as LayoutDashboardRouteImport } from './app/router/_layout.dashboard'
 import { Route as DashboardBandIndexRouteImport } from './app/router/dashboard/band/index'
-import { Route as StudentIdEnrollmentRouteImport } from './app/router/student/$id/enrollment'
+import { Route as LayoutStudentIdEnrollmentRouteImport } from './app/router/_layout.student.$id.enrollment'
 
-const EnrollmentRoute = EnrollmentRouteImport.update({
-  id: '/enrollment',
-  path: '/enrollment',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LayoutRoute = LayoutRouteImport.update({
+  id: '/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -24,67 +31,103 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LayoutEnrollmentRoute = LayoutEnrollmentRouteImport.update({
+  id: '/enrollment',
+  path: '/enrollment',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutDashboardRoute = LayoutDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const DashboardBandIndexRoute = DashboardBandIndexRouteImport.update({
   id: '/dashboard/band/',
   path: '/dashboard/band/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StudentIdEnrollmentRoute = StudentIdEnrollmentRouteImport.update({
-  id: '/student/$id/enrollment',
-  path: '/student/$id/enrollment',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const LayoutStudentIdEnrollmentRoute =
+  LayoutStudentIdEnrollmentRouteImport.update({
+    id: '/student/$id/enrollment',
+    path: '/student/$id/enrollment',
+    getParentRoute: () => LayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/enrollment': typeof EnrollmentRoute
-  '/student/$id/enrollment': typeof StudentIdEnrollmentRoute
+  '/login': typeof LoginRoute
+  '/dashboard': typeof LayoutDashboardRoute
+  '/enrollment': typeof LayoutEnrollmentRoute
   '/dashboard/band/': typeof DashboardBandIndexRoute
+  '/student/$id/enrollment': typeof LayoutStudentIdEnrollmentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/enrollment': typeof EnrollmentRoute
-  '/student/$id/enrollment': typeof StudentIdEnrollmentRoute
+  '/login': typeof LoginRoute
+  '/dashboard': typeof LayoutDashboardRoute
+  '/enrollment': typeof LayoutEnrollmentRoute
   '/dashboard/band': typeof DashboardBandIndexRoute
+  '/student/$id/enrollment': typeof LayoutStudentIdEnrollmentRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/enrollment': typeof EnrollmentRoute
-  '/student/$id/enrollment': typeof StudentIdEnrollmentRoute
+  '/_layout': typeof LayoutRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_layout/dashboard': typeof LayoutDashboardRoute
+  '/_layout/enrollment': typeof LayoutEnrollmentRoute
   '/dashboard/band/': typeof DashboardBandIndexRoute
+  '/_layout/student/$id/enrollment': typeof LayoutStudentIdEnrollmentRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
+    | '/dashboard'
     | '/enrollment'
-    | '/student/$id/enrollment'
     | '/dashboard/band/'
+    | '/student/$id/enrollment'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/enrollment' | '/student/$id/enrollment' | '/dashboard/band'
+  to:
+    | '/'
+    | '/login'
+    | '/dashboard'
+    | '/enrollment'
+    | '/dashboard/band'
+    | '/student/$id/enrollment'
   id:
     | '__root__'
     | '/'
-    | '/enrollment'
-    | '/student/$id/enrollment'
+    | '/_layout'
+    | '/login'
+    | '/_layout/dashboard'
+    | '/_layout/enrollment'
     | '/dashboard/band/'
+    | '/_layout/student/$id/enrollment'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  EnrollmentRoute: typeof EnrollmentRoute
-  StudentIdEnrollmentRoute: typeof StudentIdEnrollmentRoute
+  LayoutRoute: typeof LayoutRouteWithChildren
+  LoginRoute: typeof LoginRoute
   DashboardBandIndexRoute: typeof DashboardBandIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/enrollment': {
-      id: '/enrollment'
-      path: '/enrollment'
-      fullPath: '/enrollment'
-      preLoaderRoute: typeof EnrollmentRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_layout': {
+      id: '/_layout'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof LayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -94,6 +137,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_layout/enrollment': {
+      id: '/_layout/enrollment'
+      path: '/enrollment'
+      fullPath: '/enrollment'
+      preLoaderRoute: typeof LayoutEnrollmentRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/dashboard': {
+      id: '/_layout/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof LayoutDashboardRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/dashboard/band/': {
       id: '/dashboard/band/'
       path: '/dashboard/band'
@@ -101,20 +158,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBandIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/student/$id/enrollment': {
-      id: '/student/$id/enrollment'
+    '/_layout/student/$id/enrollment': {
+      id: '/_layout/student/$id/enrollment'
       path: '/student/$id/enrollment'
       fullPath: '/student/$id/enrollment'
-      preLoaderRoute: typeof StudentIdEnrollmentRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof LayoutStudentIdEnrollmentRouteImport
+      parentRoute: typeof LayoutRoute
     }
   }
 }
 
+interface LayoutRouteChildren {
+  LayoutDashboardRoute: typeof LayoutDashboardRoute
+  LayoutEnrollmentRoute: typeof LayoutEnrollmentRoute
+  LayoutStudentIdEnrollmentRoute: typeof LayoutStudentIdEnrollmentRoute
+}
+
+const LayoutRouteChildren: LayoutRouteChildren = {
+  LayoutDashboardRoute: LayoutDashboardRoute,
+  LayoutEnrollmentRoute: LayoutEnrollmentRoute,
+  LayoutStudentIdEnrollmentRoute: LayoutStudentIdEnrollmentRoute,
+}
+
+const LayoutRouteWithChildren =
+  LayoutRoute._addFileChildren(LayoutRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  EnrollmentRoute: EnrollmentRoute,
-  StudentIdEnrollmentRoute: StudentIdEnrollmentRoute,
+  LayoutRoute: LayoutRouteWithChildren,
+  LoginRoute: LoginRoute,
   DashboardBandIndexRoute: DashboardBandIndexRoute,
 }
 export const routeTree = rootRouteImport

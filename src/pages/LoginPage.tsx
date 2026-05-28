@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 import { LoginForm } from '../features/auth/ui/LoginForm';
 import { ShieldAlert } from 'lucide-react';
 
@@ -10,13 +10,13 @@ export const LoginPage: React.FC = () => {
   useEffect(() => {
     const token = localStorage.getItem('auth_token');
     if (token) {
-      void navigate('/dashboard');
+      void navigate({ to: '/dashboard' });
     }
   }, [navigate]);
 
   const handleLoginSuccess = () => {
     // Navigate all roles to the dashboard
-    void navigate('/dashboard');
+    void navigate({ to: '/dashboard' });
   };
 
   return (
