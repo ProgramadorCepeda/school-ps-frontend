@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { DashboardPage } from '../../pages/DashboardPage';
 
-export const Route = createFileRoute('/_layout/dashboard')({
+export const Route = createFileRoute('/_layout/dashboard/')({
   beforeLoad: () => {
     const token = localStorage.getItem('auth_token');
     if (!token) {
