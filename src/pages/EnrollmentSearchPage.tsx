@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { SearchStudentForm } from '../features/search-student/ui/SearchStudentForm';
 import type { StudentSearchItem } from '../entities/student/api/enrollment';
 import { Button } from '../shared/ui/atoms/Button';
-import { StatusBadge } from '../shared/ui/atoms/StatusBadge';
+import { StatusBadge } from '../entities/student/ui/StatusBadge';
 
 export const EnrollmentSearch: React.FC = () => {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ export const EnrollmentSearch: React.FC = () => {
 
   const handleManage = () => {
     if (selectedStudent !== null) {
-      void navigate({ to: `/student/${selectedStudent.toString()}/enrollment` });
+      void navigate({ to: `/dashboard/student/${selectedStudent.toString()}/enrollment` });
     }
   };
 

@@ -114,7 +114,7 @@ export const DashboardPage: React.FC = () => {
 
   const handleModuleClick = (moduleId: string) => {
     if (moduleId === 'matricula') {
-      void navigate({ to: '/enrollment' });
+      void navigate({ to: '/dashboard/enrollment' });
     } else {
       alert(`El módulo "${moduleId.toUpperCase()}" se encuentra en desarrollo por otro equipo.`);
     }
