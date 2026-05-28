@@ -98,7 +98,7 @@ export const enrollmentApi = {
 
   registerDirectedPayment: async (payload: {
     matricula_id: number;
-    asignaciones: { concepto: string; complementario_id?: number; monto: number }[];
+    asignaciones: { concepto: string; complementario_id?: number; detalle_id?: number; monto: number }[];
     codigo_talonario: string;
     observacion?: string;
   }): Promise<PaymentResultResponse> => {
