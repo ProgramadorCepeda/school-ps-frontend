@@ -125,7 +125,7 @@ export const AssignComplementaryModal: React.FC<AssignComplementaryModalProps> =
       }
 
       await enrollmentApi.assignComplementaryConcept(matriculaId, {
-        complementary_id: Number(selectedConceptId),
+        complementario_id: Number(selectedConceptId),
         descuento: descuento
       });
 

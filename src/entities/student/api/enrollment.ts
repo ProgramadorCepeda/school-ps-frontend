@@ -277,15 +277,31 @@ export const enrollmentApi = {
     return response.json() as Promise<{ mensaje: string; complementario_id: number }>;
   },
 
-  assignComplementaryConcept: async (matriculaId: number, payload: { complementary_id: number; descuento: number }): Promise<{ mensaje: string; detalle_id: number }> => {
+  assignComplementaryConcept: async (matriculaId: number, payload: { complementario_id: number; descuento: number }): Promise<{ mensaje: string; detalle_id: number }> => {
     const response = await fetch(`${API_BASE}/${matriculaId.toString()}/complementary/assign`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
     if (!response.ok) {
-      const errData = (await response.json().catch(() => ({}))) as { detail?: string };
-      throw new Error(errData.detail ?? 'Error al asignar el concepto complementario');
+      const errData = (await response.json().catch(() => ({}))) as { detail?: unknown };
+      let errMsg = 'Error al asignar el concepto complementario';
+      if (errData.detail) {
+        if (typeof errData.detail === 'string') {
+          errMsg = errData.detail;
+        } else if (Array.isArray(errData.detail)) {
+          const messages = errData.detail.map((e: unknown) => {
+            if (e && typeof e === 'object' && 'msg' in e) {
+              return String(e.msg);
+            }
+            return JSON.stringify(e);
+          });
+          errMsg = messages.join(', ');
+        } else {
+          errMsg = JSON.stringify(errData.detail);
+        }
+      }
+      throw new Error(errMsg);
     }
     return response.json() as Promise<{ mensaje: string; detalle_id: number }>;
   }
