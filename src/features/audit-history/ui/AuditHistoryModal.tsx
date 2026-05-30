@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Calendar, Loader, Receipt, AlertCircle } from 'lucide-react';
 import { Modal } from '../../../shared/ui/Modal';
 import { Button } from '../../../shared/ui/atoms/Button';
@@ -20,7 +20,7 @@ export const AuditHistoryModal: React.FC<AuditHistoryModalProps> = ({
   studentName
 }) => {
   const [payments, setPayments] = useState<PaymentHistoryItem[]>([]);
-  const [year, setYear] = useState(new Date().getFullYear());
+  const [year, setYear] = useState(() => new Date().getFullYear());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,26 +28,32 @@ export const AuditHistoryModal: React.FC<AuditHistoryModalProps> = ({
   const [selectedPagoId, setSelectedPagoId] = useState<number | null>(null);
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
 
-  const fetchHistory = async () => {
+  const fetchHistory = useCallback(async () => {
     if (!studentId) return;
     try {
       setLoading(true);
       setError(null);
       const data = await enrollmentApi.getPaymentHistory(studentId, year);
       setPayments(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError('No se pudo cargar el historial de pagos del estudiante.');
+      const msg = err instanceof Error ? err.message : 'No se pudo cargar el historial de pagos del estudiante.';
+      setError(msg);
     } finally {
       setLoading(false);
     }
-  };
+  }, [studentId, year]);
 
   useEffect(() => {
     if (isOpen && studentId) {
-      void fetchHistory();
+      const timer = setTimeout(() => {
+        void fetchHistory();
+      }, 0);
+      return () => {
+        clearTimeout(timer);
+      };
     }
-  }, [isOpen, studentId, year]);
+  }, [isOpen, studentId, fetchHistory]);
 
   const handleOpenReceipt = (pagoId: number) => {
     setSelectedPagoId(pagoId);
@@ -145,7 +151,7 @@ export const AuditHistoryModal: React.FC<AuditHistoryModalProps> = ({
                         ${p.monto_total.toLocaleString()}
                       </td>
                       <td style={{ color: p.observacion ? 'var(--text-main)' : 'var(--text-muted)', fontSize: '0.8rem' }}>
-                        {p.observacion || 'Sin observación'}
+                        {p.observacion ?? 'Sin observación'}
                       </td>
                       <td style={{ textAlign: 'center' }}>
                         <Button

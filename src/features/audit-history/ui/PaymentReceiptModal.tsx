@@ -29,7 +29,7 @@ export const PaymentReceiptModal: React.FC<PaymentReceiptModalProps> = ({
         setError(null);
         const data = await enrollmentApi.getPaymentReceipt(pagoId);
         setReceipt(data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error(err);
         setError('No se pudo cargar la información del comprobante de pago.');
       } finally {
@@ -142,7 +142,7 @@ export const PaymentReceiptModal: React.FC<PaymentReceiptModalProps> = ({
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.875rem' }}>
                 {receipt.distribuciones.map((dist, idx) => (
-                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div key={`receipt-dist-${dist.concepto}-${idx.toString()}`} style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span>
                       {dist.concepto === 'matricula_base' ? 'MATRÍCULA BASE' : dist.concepto.toUpperCase()}
                     </span>

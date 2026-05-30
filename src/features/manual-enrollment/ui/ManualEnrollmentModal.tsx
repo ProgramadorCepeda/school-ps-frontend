@@ -35,11 +35,11 @@ export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
   const [grado, setGrado] = useState(GRADES[0]);
   const [nombreAcudiente, setNombreAcudiente] = useState('');
   const [periodoId, setPeriodoId] = useState(1);
-  const [anio, setAnio] = useState(new Date().getFullYear());
+  const [anio, setAnio] = useState(() => new Date().getFullYear());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
@@ -51,14 +51,14 @@ export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
         nombre: nombre.trim(),
         grado,
         nombre_acudiente: nombreAcudiente.trim(),
-        periodo_id: Number(periodoId),
-        anio: Number(anio)
+        periodo_id: periodoId,
+        anio: anio
       });
 
       // 2. Fetch the newly created student by document to get their student ID
       const searchRes = await enrollmentApi.searchStudents({
         documento: documento.trim(),
-        year: Number(anio)
+        year: anio
       });
 
       const matchedStudent = searchRes.estudiantes.find(
@@ -75,9 +75,10 @@ export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
           throw new Error('Estudiante matriculado, pero no se pudo encontrar en la base de datos para redirección.');
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err?.message ?? 'Ocurrió un error inesperado al matricular al estudiante.');
+      const msg = err instanceof Error ? err.message : 'Ocurrió un error inesperado al matricular al estudiante.';
+      setError(msg);
     } finally {
       setLoading(false);
     }

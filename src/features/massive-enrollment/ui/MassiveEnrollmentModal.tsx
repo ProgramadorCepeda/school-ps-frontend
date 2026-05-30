@@ -18,7 +18,7 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
   onSuccess
 }) => {
   const [periodoId, setPeriodoId] = useState(1);
-  const [anio, setAnio] = useState(new Date().getFullYear());
+  const [anio, setAnio] = useState(() => new Date().getFullYear());
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +44,7 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+    if (e.dataTransfer.files.length > 0) {
       const selectedFile = e.dataTransfer.files[0];
       if (selectedFile.name.toLowerCase().endsWith('.csv')) {
         setFile(selectedFile);
@@ -56,7 +56,7 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!file) {
       setError('Debe seleccionar un archivo CSV antes de enviar.');
@@ -68,15 +68,16 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
 
     try {
       const res = await enrollmentApi.registerMassiveCsv(
-        Number(periodoId),
-        Number(anio),
+        periodoId,
+        anio,
         file
       );
       setResult(res);
       onSuccess();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err?.message ?? 'Error al procesar el archivo de matrículas.');
+      const msg = err instanceof Error ? err.message : 'Error al procesar el archivo de matrículas.';
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -232,12 +233,12 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
             </div>
           </div>
 
-          {result.error_details && result.error_details.length > 0 && (
+          {result.error_details.length > 0 && (
             <div>
               <h5 style={{ margin: '0 0 8px 0', fontWeight: 600, fontSize: '0.875rem', color: 'var(--text-main)' }}>Detalle de Errores:</h5>
               <div style={{ maxHeight: '180px', overflowY: 'auto', border: '1px solid var(--border)', borderRadius: '8px', padding: '12px', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {result.error_details.map((detail, index) => (
-                  <div key={index} style={{ fontSize: '0.875rem', color: 'var(--status-red)', display: 'flex', gap: '6px', alignItems: 'flex-start' }}>
+                  <div key={`massive-err-${index.toString()}`} style={{ fontSize: '0.875rem', color: 'var(--status-red)', display: 'flex', gap: '6px', alignItems: 'flex-start' }}>
                     <span style={{ fontWeight: 600 }}>•</span>
                     <span>{detail}</span>
                   </div>

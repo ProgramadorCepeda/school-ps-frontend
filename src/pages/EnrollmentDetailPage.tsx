@@ -58,9 +58,10 @@ export const EnrollmentDetail: React.FC = () => {
         await enrollmentApi.deleteComplementaryDetail(detalleId);
         alert("Concepto complementario desvinculado exitosamente");
         await handleRefresh();
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error(err);
-        alert(err?.message ?? "Error al desvincular el concepto");
+        const msg = err instanceof Error ? err.message : "Error al desvincular el concepto";
+        alert(msg);
       }
     }
   };
