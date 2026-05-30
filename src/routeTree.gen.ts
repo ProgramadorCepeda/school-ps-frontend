@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './app/router/__root'
 import { Route as IndexRouteImport } from './app/router/index'
 import { Route as DashboardEnrollmentRouteImport } from './app/router/dashboard/enrollment'
+import { Route as DashboardTestsIndexRouteImport } from './app/router/dashboard/tests/index'
 import { Route as DashboardRectoriaIndexRouteImport } from './app/router/dashboard/rectoria/index'
 import { Route as DashboardBandIndexRouteImport } from './app/router/dashboard/band/index'
 import { Route as DashboardStudentIdEnrollmentRouteImport } from './app/router/dashboard/student/$id/enrollment'
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const DashboardEnrollmentRoute = DashboardEnrollmentRouteImport.update({
   id: '/dashboard/enrollment',
   path: '/dashboard/enrollment',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardTestsIndexRoute = DashboardTestsIndexRouteImport.update({
+  id: '/dashboard/tests/',
+  path: '/dashboard/tests/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRectoriaIndexRoute = DashboardRectoriaIndexRouteImport.update({
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/enrollment': typeof DashboardEnrollmentRoute
   '/dashboard/band/': typeof DashboardBandIndexRoute
   '/dashboard/rectoria/': typeof DashboardRectoriaIndexRoute
+  '/dashboard/tests/': typeof DashboardTestsIndexRoute
   '/dashboard/student/$id/enrollment': typeof DashboardStudentIdEnrollmentRoute
 }
 export interface FileRoutesByTo {
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/dashboard/enrollment': typeof DashboardEnrollmentRoute
   '/dashboard/band': typeof DashboardBandIndexRoute
   '/dashboard/rectoria': typeof DashboardRectoriaIndexRoute
+  '/dashboard/tests': typeof DashboardTestsIndexRoute
   '/dashboard/student/$id/enrollment': typeof DashboardStudentIdEnrollmentRoute
 }
 export interface FileRoutesById {
@@ -62,6 +70,7 @@ export interface FileRoutesById {
   '/dashboard/enrollment': typeof DashboardEnrollmentRoute
   '/dashboard/band/': typeof DashboardBandIndexRoute
   '/dashboard/rectoria/': typeof DashboardRectoriaIndexRoute
+  '/dashboard/tests/': typeof DashboardTestsIndexRoute
   '/dashboard/student/$id/enrollment': typeof DashboardStudentIdEnrollmentRoute
 }
 export interface FileRouteTypes {
@@ -71,6 +80,7 @@ export interface FileRouteTypes {
     | '/dashboard/enrollment'
     | '/dashboard/band/'
     | '/dashboard/rectoria/'
+    | '/dashboard/tests/'
     | '/dashboard/student/$id/enrollment'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -78,6 +88,7 @@ export interface FileRouteTypes {
     | '/dashboard/enrollment'
     | '/dashboard/band'
     | '/dashboard/rectoria'
+    | '/dashboard/tests'
     | '/dashboard/student/$id/enrollment'
   id:
     | '__root__'
@@ -85,6 +96,7 @@ export interface FileRouteTypes {
     | '/dashboard/enrollment'
     | '/dashboard/band/'
     | '/dashboard/rectoria/'
+    | '/dashboard/tests/'
     | '/dashboard/student/$id/enrollment'
   fileRoutesById: FileRoutesById
 }
@@ -93,6 +105,7 @@ export interface RootRouteChildren {
   DashboardEnrollmentRoute: typeof DashboardEnrollmentRoute
   DashboardBandIndexRoute: typeof DashboardBandIndexRoute
   DashboardRectoriaIndexRoute: typeof DashboardRectoriaIndexRoute
+  DashboardTestsIndexRoute: typeof DashboardTestsIndexRoute
   DashboardStudentIdEnrollmentRoute: typeof DashboardStudentIdEnrollmentRoute
 }
 
@@ -110,6 +123,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard/enrollment'
       fullPath: '/dashboard/enrollment'
       preLoaderRoute: typeof DashboardEnrollmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/tests/': {
+      id: '/dashboard/tests/'
+      path: '/dashboard/tests'
+      fullPath: '/dashboard/tests/'
+      preLoaderRoute: typeof DashboardTestsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/rectoria/': {
@@ -141,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardEnrollmentRoute: DashboardEnrollmentRoute,
   DashboardBandIndexRoute: DashboardBandIndexRoute,
   DashboardRectoriaIndexRoute: DashboardRectoriaIndexRoute,
+  DashboardTestsIndexRoute: DashboardTestsIndexRoute,
   DashboardStudentIdEnrollmentRoute: DashboardStudentIdEnrollmentRoute,
 }
 export const routeTree = rootRouteImport
