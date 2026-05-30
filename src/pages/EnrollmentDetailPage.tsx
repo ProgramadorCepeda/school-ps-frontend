@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from '@tanstack/react-router';
-import { ArrowLeft, User, FileText, Edit } from 'lucide-react';
+import { ArrowLeft, User, FileText, Edit, Trash2 } from 'lucide-react';
 import { enrollmentApi } from '../entities/student/api/enrollment';
 import type { StudentBalance } from '../entities/student/api/enrollment';
 import { Button } from '../shared/ui/atoms/Button';
 import { StatusBadge } from '../entities/student/ui/StatusBadge';
 import { PayEnrollmentForm } from '../features/pay-enrollment/ui/PayEnrollmentForm';
 import { ModifyEnrollmentModal } from '../features/modify-enrollment/ui/ModifyEnrollmentModal';
+import { AuditHistoryModal } from '../features/audit-history/ui/AuditHistoryModal';
 
 export const EnrollmentDetail: React.FC = () => {
   const { id } = useParams({ from: '/_layout/dashboard/student/$id/enrollment' });
@@ -16,6 +17,9 @@ export const EnrollmentDetail: React.FC = () => {
   // Edit Modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editConcept, setEditConcept] = useState<{ id: string; name: string; currentVal: number; detalleId?: number } | null>(null);
+
+  // Audit History Modal state
+  const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
 
   const fetchBalance = useCallback(async () => {
     if (!id) return;
@@ -48,6 +52,19 @@ export const EnrollmentDetail: React.FC = () => {
     await fetchBalance();
   };
 
+  const handleUnlink = async (detalleId: number, name: string) => {
+    if (window.confirm(`¿Estás seguro de que deseas desvincular el concepto "${name}" de este estudiante?`)) {
+      try {
+        await enrollmentApi.deleteComplementaryDetail(detalleId);
+        alert("Concepto complementario desvinculado exitosamente");
+        await handleRefresh();
+      } catch (err: any) {
+        console.error(err);
+        alert(err?.message ?? "Error al desvincular el concepto");
+      }
+    }
+  };
+
   if (loading) {
     return <div style={{ padding: '2rem', textAlign: 'center' }}>Cargando información del estudiante...</div>;
   }
@@ -63,7 +80,7 @@ export const EnrollmentDetail: React.FC = () => {
         <button onClick={() => { window.history.back(); }} style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500 }}>
           <ArrowLeft size={16} /> Volver a búsqueda
         </button>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={() => { setIsAuditModalOpen(true); }}>
           Ver Historial de Auditoría
         </Button>
       </div>
@@ -123,23 +140,42 @@ export const EnrollmentDetail: React.FC = () => {
             </div>
           </div>
 
-          {balance.complementarios.map(comp => (
-             <div key={comp.detalle_id.toString()} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', border: '1px solid var(--border)', borderRadius: '8px', background: '#fff' }}>
-             <div>
-               <p style={{ fontWeight: 600, margin: 0 }}>{comp.tipo_complementario}</p>
-               <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0 }}>Concepto complementario</p>
-             </div>
-             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <p style={{ fontWeight: 600, fontSize: '1.1rem', margin: 0 }}>${comp.valor_completo.toLocaleString()}</p>
-                <button 
-                  onClick={() => { openEditModal(`comp_${comp.complementario_id.toString()}`, comp.tipo_complementario, comp.valor_completo, comp.detalle_id); }}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary)', padding: '4px' }}
-                >
-                  <Edit size={18} />
-                </button>
+          {balance.complementarios.map(comp => {
+            const tieneAbonos = comp.valor_pendiente < (comp.valor_completo - comp.descuento);
+            return (
+              <div key={comp.detalle_id.toString()} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', border: '1px solid var(--border)', borderRadius: '8px', background: '#fff' }}>
+                <div>
+                  <p style={{ fontWeight: 600, margin: 0 }}>{comp.tipo_complementario}</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0 }}>Concepto complementario</p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <p style={{ fontWeight: 600, fontSize: '1.1rem', margin: 0 }}>${comp.valor_completo.toLocaleString()}</p>
+                  <button 
+                    onClick={() => { openEditModal(`comp_${comp.complementario_id.toString()}`, comp.tipo_complementario, comp.valor_completo, comp.detalle_id); }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary)', padding: '4px' }}
+                    title="Editar costo"
+                  >
+                    <Edit size={18} />
+                  </button>
+                  <button
+                    onClick={() => { void handleUnlink(comp.detalle_id, comp.tipo_complementario); }}
+                    disabled={tieneAbonos}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: tieneAbonos ? 'not-allowed' : 'pointer',
+                      color: tieneAbonos ? '#cbd5e1' : 'var(--status-red, #ef4444)',
+                      padding: '4px',
+                      opacity: tieneAbonos ? 0.5 : 1
+                    }}
+                    title={tieneAbonos ? "No se puede desvincular un concepto que ya tiene abonos registrados" : "Desvincular concepto"}
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </div>
-           </div>
-          ))}
+            );
+          })}
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', borderRadius: '8px', background: '#eff6ff', border: '1px solid #bfdbfe', marginTop: '8px' }}>
             <p style={{ fontWeight: 700, margin: 0, color: '#1e3a8a' }}>Total Matrícula</p>
@@ -169,6 +205,14 @@ export const EnrollmentDetail: React.FC = () => {
         balance={balance}
         concept={editConcept}
         onEditSuccess={handleRefresh}
+      />
+
+      {/* Audit History Modal */}
+      <AuditHistoryModal
+        isOpen={isAuditModalOpen}
+        onClose={() => { setIsAuditModalOpen(false); }}
+        studentId={balance.estudiante.id}
+        studentName={balance.estudiante.nombre}
       />
     </div>
   );

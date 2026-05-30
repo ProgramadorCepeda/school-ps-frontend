@@ -4,12 +4,18 @@ import { SearchStudentForm } from '../features/search-student/ui/SearchStudentFo
 import type { StudentSearchItem } from '../entities/student/api/enrollment';
 import { Button } from '../shared/ui/atoms/Button';
 import { StatusBadge } from '../entities/student/ui/StatusBadge';
+import { ManualEnrollmentModal } from '../features/manual-enrollment/ui/ManualEnrollmentModal';
+import { MassiveEnrollmentModal } from '../features/massive-enrollment/ui/MassiveEnrollmentModal';
 
 export const EnrollmentSearch: React.FC = () => {
   const navigate = useNavigate();
   const [students, setStudents] = useState<StudentSearchItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<number | null>(null);
+
+  // Modals state
+  const [isManualModalOpen, setIsManualModalOpen] = useState(false);
+  const [isMassiveModalOpen, setIsMassiveModalOpen] = useState(false);
 
   const handleSearchStart = useCallback(() => {
     setLoading(true);
@@ -30,11 +36,31 @@ export const EnrollmentSearch: React.FC = () => {
     }
   }, [navigate, selectedStudent]);
 
+  const handleManualSuccess = (studentId: number) => {
+    setIsManualModalOpen(false);
+    void navigate({ to: `/dashboard/student/${studentId.toString()}/enrollment` });
+  };
+
+  const handleMassiveSuccess = () => {
+    // If massive import succeeds, we could just close the modal and prompt user.
+    // The modal itself handles listing stats, so closing will just happen when user clicks Done.
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <div>
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '4px' }}>Módulo de Matrícula</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Gestión de matrículas y pagos</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+        <div>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '4px' }}>Módulo de Matrícula</h2>
+          <p style={{ color: 'var(--text-muted)' }}>Gestión de matrículas y pagos</p>
+        </div>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <Button variant="outline" onClick={() => { setIsMassiveModalOpen(true); }}>
+            Cargar CSV Masivo
+          </Button>
+          <Button variant="primary" onClick={() => { setIsManualModalOpen(true); }}>
+            Matrícula Manual
+          </Button>
+        </div>
       </div>
 
       <SearchStudentForm 
@@ -100,6 +126,21 @@ export const EnrollmentSearch: React.FC = () => {
           </Button>
         </div>
       )}
+
+      {/* Manual enrollment modal */}
+      <ManualEnrollmentModal
+        isOpen={isManualModalOpen}
+        onClose={() => { setIsManualModalOpen(false); }}
+        onSuccess={handleManualSuccess}
+      />
+
+      {/* Massive enrollment modal */}
+      <MassiveEnrollmentModal
+        isOpen={isMassiveModalOpen}
+        onClose={() => { setIsMassiveModalOpen(false); }}
+        onSuccess={handleMassiveSuccess}
+      />
     </div>
   );
 };
+
