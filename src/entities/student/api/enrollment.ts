@@ -123,6 +123,23 @@ export interface PaymentReceiptResponse {
   }[];
 }
 
+export interface ComplementaryConcept {
+  id: number;
+  tipo_complementario: string;
+  anio: number;
+  valor: number;
+  estado_complemento: string;
+  uso_matricula: boolean;
+}
+
+export interface CreateComplementaryPayload {
+  tipo_complementario: string;
+  anio: number;
+  valor: number;
+  estado_complemento: string;
+  uso_matricula: boolean;
+}
+
 const API_BASE = '/api/v1/enrollment';
 
 export const enrollmentApi = {
@@ -236,5 +253,40 @@ export const enrollmentApi = {
       throw new Error(errData.detail ?? 'Error al desvincular el concepto complementario');
     }
     return response.json() as Promise<{ mensaje: string; detalle_id: number; matricula_id: number }>;
+  },
+
+  getComplementaryConcepts: async (year?: number): Promise<ComplementaryConcept[]> => {
+    const query = year !== undefined ? `?year=${year.toString()}` : '';
+    const response = await fetch(`${API_BASE}/complementary${query}`);
+    if (!response.ok) {
+      throw new Error('Error al obtener los conceptos complementarios');
+    }
+    return response.json() as Promise<ComplementaryConcept[]>;
+  },
+
+  createComplementaryConcept: async (payload: CreateComplementaryPayload): Promise<{ mensaje: string; complementario_id: number }> => {
+    const response = await fetch(`${API_BASE}/complementary`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      const errData = (await response.json().catch(() => ({}))) as { detail?: string };
+      throw new Error(errData.detail ?? 'Error al crear el concepto complementario');
+    }
+    return response.json() as Promise<{ mensaje: string; complementario_id: number }>;
+  },
+
+  assignComplementaryConcept: async (matriculaId: number, payload: { complementary_id: number; descuento: number }): Promise<{ mensaje: string; detalle_id: number }> => {
+    const response = await fetch(`${API_BASE}/${matriculaId.toString()}/complementary/assign`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      const errData = (await response.json().catch(() => ({}))) as { detail?: string };
+      throw new Error(errData.detail ?? 'Error al asignar el concepto complementario');
+    }
+    return response.json() as Promise<{ mensaje: string; detalle_id: number }>;
   }
 };

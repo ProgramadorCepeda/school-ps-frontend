@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from '@tanstack/react-router';
-import { ArrowLeft, User, FileText, Edit, Trash2 } from 'lucide-react';
+import { ArrowLeft, User, FileText, Edit, Trash2, Plus } from 'lucide-react';
 import { enrollmentApi } from '../entities/student/api/enrollment';
 import type { StudentBalance } from '../entities/student/api/enrollment';
 import { Button } from '../shared/ui/atoms/Button';
@@ -8,6 +8,7 @@ import { StatusBadge } from '../entities/student/ui/StatusBadge';
 import { PayEnrollmentForm } from '../features/pay-enrollment/ui/PayEnrollmentForm';
 import { ModifyEnrollmentModal } from '../features/modify-enrollment/ui/ModifyEnrollmentModal';
 import { AuditHistoryModal } from '../features/audit-history/ui/AuditHistoryModal';
+import { AssignComplementaryModal } from '../features/modify-enrollment/ui/AssignComplementaryModal';
 
 export const EnrollmentDetail: React.FC = () => {
   const { id } = useParams({ from: '/_layout/dashboard/student/$id/enrollment' });
@@ -20,6 +21,9 @@ export const EnrollmentDetail: React.FC = () => {
 
   // Audit History Modal state
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
+
+  // Assign Concept Modal state
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
 
   const fetchBalance = useCallback(async () => {
     if (!id) return;
@@ -119,9 +123,20 @@ export const EnrollmentDetail: React.FC = () => {
 
       {/* Conceptos Económicos */}
       <div className="card" style={{ padding: '0', overflow: 'hidden', marginBottom: 0 }}>
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '8px', background: '#f8fafc' }}>
-          <FileText size={20} color="var(--text-muted)" />
-          <h3 style={{ margin: 0, fontSize: '1rem' }}>Conceptos Económicos Parametrizados</h3>
+        <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <FileText size={20} color="var(--text-muted)" />
+            <h3 style={{ margin: 0, fontSize: '1rem' }}>Conceptos Económicos Parametrizados</h3>
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => { setIsAssignModalOpen(true); }}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px' }}
+          >
+            <Plus size={14} />
+            Agregar Concepto
+          </Button>
         </div>
         
         <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -214,6 +229,15 @@ export const EnrollmentDetail: React.FC = () => {
         onClose={() => { setIsAuditModalOpen(false); }}
         studentId={balance.estudiante.id}
         studentName={balance.estudiante.nombre}
+      />
+
+      {/* Assign Complementary Modal */}
+      <AssignComplementaryModal
+        isOpen={isAssignModalOpen}
+        onClose={() => { setIsAssignModalOpen(false); }}
+        matriculaId={balance.matricula_id ?? balance.estudiante.id}
+        year={balance.anio}
+        onSuccess={handleRefresh}
       />
     </div>
   );
