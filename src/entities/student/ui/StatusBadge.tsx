@@ -27,9 +27,5 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, label }) => {
     defaultLabel = 'No Paz y Salvo';
   }
 
-  return (
-    <Badge variant={variant}>
-      {label ?? defaultLabel}
-    </Badge>
-  );
+  return <Badge variant={variant}>{label ?? defaultLabel}</Badge>;
 };

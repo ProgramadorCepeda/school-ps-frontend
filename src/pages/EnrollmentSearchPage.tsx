@@ -48,22 +48,40 @@ export const EnrollmentSearch: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '16px',
+        }}
+      >
         <div>
           <h2 style={{ fontSize: '1.5rem', marginBottom: '4px' }}>Módulo de Matrícula</h2>
           <p style={{ color: 'var(--text-muted)' }}>Gestión de matrículas y pagos</p>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
-          <Button variant="outline" onClick={() => { setIsMassiveModalOpen(true); }}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setIsMassiveModalOpen(true);
+            }}
+          >
             Cargar CSV Masivo
           </Button>
-          <Button variant="primary" onClick={() => { setIsManualModalOpen(true); }}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setIsManualModalOpen(true);
+            }}
+          >
             Matrícula Manual
           </Button>
         </div>
       </div>
 
-      <SearchStudentForm 
+      <SearchStudentForm
         onSearchStart={handleSearchStart}
         onSearchEnd={handleSearchEnd}
         onSearchSuccess={handleSearchSuccess}
@@ -85,19 +103,40 @@ export const EnrollmentSearch: React.FC = () => {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={8} style={{ textAlign: 'center' }}>Cargando...</td></tr>
+              <tr>
+                <td colSpan={8} style={{ textAlign: 'center' }}>
+                  Cargando...
+                </td>
+              </tr>
             ) : students.length === 0 ? (
-              <tr><td colSpan={8} style={{ textAlign: 'center' }}>No se encontraron resultados</td></tr>
+              <tr>
+                <td colSpan={8} style={{ textAlign: 'center' }}>
+                  No se encontraron resultados
+                </td>
+              </tr>
             ) : (
-              students.map(student => (
-                <tr key={student.estudiante_id} onClick={() => { setSelectedStudent(student.estudiante_id); }} style={{ cursor: 'pointer' }}>
+              students.map((student) => (
+                <tr
+                  key={student.estudiante_id}
+                  onClick={() => {
+                    setSelectedStudent(student.estudiante_id);
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
                   <td>
-                    <input 
-                      type="radio" 
-                      name="studentSelect" 
+                    <input
+                      type="radio"
+                      name="studentSelect"
                       checked={selectedStudent === student.estudiante_id}
-                      onChange={() => { setSelectedStudent(student.estudiante_id); }}
-                      style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#1d4ed8' }}
+                      onChange={() => {
+                        setSelectedStudent(student.estudiante_id);
+                      }}
+                      style={{
+                        cursor: 'pointer',
+                        width: '16px',
+                        height: '16px',
+                        accentColor: '#1d4ed8',
+                      }}
                     />
                   </td>
                   <td>{student.documento}</td>
@@ -117,7 +156,17 @@ export const EnrollmentSearch: React.FC = () => {
       </div>
 
       {selectedStudent !== null && (
-        <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div
+          style={{
+            background: '#eff6ff',
+            border: '1px solid #bfdbfe',
+            borderRadius: '8px',
+            padding: '16px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <p style={{ color: '#1e3a8a', margin: 0 }}>
             Ha seleccionado un estudiante. Puede continuar con la gestión de matrícula.
           </p>
@@ -130,17 +179,20 @@ export const EnrollmentSearch: React.FC = () => {
       {/* Manual enrollment modal */}
       <ManualEnrollmentModal
         isOpen={isManualModalOpen}
-        onClose={() => { setIsManualModalOpen(false); }}
+        onClose={() => {
+          setIsManualModalOpen(false);
+        }}
         onSuccess={handleManualSuccess}
       />
 
       {/* Massive enrollment modal */}
       <MassiveEnrollmentModal
         isOpen={isMassiveModalOpen}
-        onClose={() => { setIsMassiveModalOpen(false); }}
+        onClose={() => {
+          setIsMassiveModalOpen(false);
+        }}
         onSuccess={handleMassiveSuccess}
       />
     </div>
   );
 };
-

@@ -126,7 +126,11 @@ export interface PaymentReceiptResponse {
 const API_BASE = '/api/v1/enrollment';
 
 export const enrollmentApi = {
-  searchStudents: async (params: { documento?: string; nombre?: string; year?: number }): Promise<StudentSearchListResponse> => {
+  searchStudents: async (params: {
+    documento?: string;
+    nombre?: string;
+    year?: number;
+  }): Promise<StudentSearchListResponse> => {
     const query = new URLSearchParams();
     if (params.documento) query.append('documento', params.documento);
     if (params.nombre) query.append('nombre', params.nombre);
@@ -137,15 +141,25 @@ export const enrollmentApi = {
     return response.json() as Promise<StudentSearchListResponse>;
   },
 
-  getStudentBalance: async (studentId: number, year: number = new Date().getFullYear()): Promise<StudentBalance> => {
-    const response = await fetch(`${API_BASE}/students/${studentId.toString()}/balance?year=${year.toString()}`);
+  getStudentBalance: async (
+    studentId: number,
+    year: number = new Date().getFullYear(),
+  ): Promise<StudentBalance> => {
+    const response = await fetch(
+      `${API_BASE}/students/${studentId.toString()}/balance?year=${year.toString()}`,
+    );
     if (!response.ok) throw new Error('Error al obtener balance');
     return response.json() as Promise<StudentBalance>;
   },
 
   registerDirectedPayment: async (payload: {
     matricula_id: number;
-    asignaciones: { concepto: string; complementario_id?: number; detalle_id?: number; monto: number }[];
+    asignaciones: {
+      concepto: string;
+      complementario_id?: number;
+      detalle_id?: number;
+      monto: number;
+    }[];
     codigo_talonario: string;
     observacion?: string;
   }): Promise<PaymentResultResponse> => {
@@ -168,7 +182,7 @@ export const enrollmentApi = {
         detalle_id: number;
         nuevo_valor_completo?: number;
       }[];
-    }
+    },
   ): Promise<ModifyEnrollmentResponse> => {
     const response = await fetch(`${API_BASE}/students/${matriculaId.toString()}/matricula`, {
       method: 'PUT',
@@ -182,14 +196,21 @@ export const enrollmentApi = {
     return response.json() as Promise<ModifyEnrollmentResponse>;
   },
 
-  registerMassiveCsv: async (periodoId: number, anio: number, file: File): Promise<MassEnrollmentResponse> => {
+  registerMassiveCsv: async (
+    periodoId: number,
+    anio: number,
+    file: File,
+  ): Promise<MassEnrollmentResponse> => {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await fetch(`${API_BASE}/register/massive/csv?periodo_id=${periodoId.toString()}&anio=${anio.toString()}`, {
-      method: 'POST',
-      body: formData,
-    });
+    const response = await fetch(
+      `${API_BASE}/register/massive/csv?periodo_id=${periodoId.toString()}&anio=${anio.toString()}`,
+      {
+        method: 'POST',
+        body: formData,
+      },
+    );
     if (!response.ok) {
       const errData = (await response.json().catch(() => ({}))) as { detail?: string };
       throw new Error(errData.detail ?? 'Error al registrar matrículas masivamente');
@@ -197,7 +218,9 @@ export const enrollmentApi = {
     return response.json() as Promise<MassEnrollmentResponse>;
   },
 
-  manualEnrollment: async (payload: ManualEnrollmentPayload): Promise<{ mensaje: string; matricula_id: number }> => {
+  manualEnrollment: async (
+    payload: ManualEnrollmentPayload,
+  ): Promise<{ mensaje: string; matricula_id: number }> => {
     const response = await fetch(`${API_BASE}/students/manual`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -227,7 +250,9 @@ export const enrollmentApi = {
     return response.json() as Promise<PaymentReceiptResponse>;
   },
 
-  deleteComplementaryDetail: async (detalleId: number): Promise<{ mensaje: string; detalle_id: number; matricula_id: number }> => {
+  deleteComplementaryDetail: async (
+    detalleId: number,
+  ): Promise<{ mensaje: string; detalle_id: number; matricula_id: number }> => {
     const response = await fetch(`${API_BASE}/details/${detalleId.toString()}`, {
       method: 'DELETE',
     });
@@ -235,6 +260,10 @@ export const enrollmentApi = {
       const errData = (await response.json().catch(() => ({}))) as { detail?: string };
       throw new Error(errData.detail ?? 'Error al desvincular el concepto complementario');
     }
-    return response.json() as Promise<{ mensaje: string; detalle_id: number; matricula_id: number }>;
-  }
+    return response.json() as Promise<{
+      mensaje: string;
+      detalle_id: number;
+      matricula_id: number;
+    }>;
+  },
 };

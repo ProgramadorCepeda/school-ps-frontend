@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Upload, AlertCircle, CheckCircle, FileSpreadsheet } from 'lucide-react';
-import { Modal } from '../../../shared/ui/Modal';
+import { Modal } from '../../../shared/ui/atoms/Modal';
 import { Button } from '../../../shared/ui/atoms/Button';
 import { Input } from '../../../shared/ui/atoms/Input';
 import { enrollmentApi } from '../../../entities/student/api/enrollment';
@@ -15,7 +15,7 @@ interface MassiveEnrollmentModalProps {
 export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
   isOpen,
   onClose,
-  onSuccess
+  onSuccess,
 }) => {
   const [periodoId, setPeriodoId] = useState(1);
   const [anio, setAnio] = useState(() => new Date().getFullYear());
@@ -67,16 +67,13 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
     setLoading(true);
 
     try {
-      const res = await enrollmentApi.registerMassiveCsv(
-        periodoId,
-        anio,
-        file
-      );
+      const res = await enrollmentApi.registerMassiveCsv(periodoId, anio, file);
       setResult(res);
       onSuccess();
     } catch (err: unknown) {
       console.error(err);
-      const msg = err instanceof Error ? err.message : 'Error al procesar el archivo de matrículas.';
+      const msg =
+        err instanceof Error ? err.message : 'Error al procesar el archivo de matrículas.';
       setError(msg);
     } finally {
       setLoading(false);
@@ -93,9 +90,26 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Matrícula Masiva (CSV)" width={600}>
       {!result ? (
-        <form onSubmit={(e) => { void handleSubmit(e); }} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <form
+          onSubmit={(e) => {
+            void handleSubmit(e);
+          }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+        >
           {error && (
-            <div style={{ padding: '12px', borderRadius: '6px', backgroundColor: 'var(--status-red-bg)', color: 'var(--status-red)', fontSize: '0.875rem', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div
+              style={{
+                padding: '12px',
+                borderRadius: '6px',
+                backgroundColor: 'var(--status-red-bg)',
+                color: 'var(--status-red)',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
               <AlertCircle size={18} />
               {error}
             </div>
@@ -106,7 +120,9 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
               <label className="input-label">Periodo Académico *</label>
               <select
                 value={periodoId}
-                onChange={(e) => { setPeriodoId(Number(e.target.value)); }}
+                onChange={(e) => {
+                  setPeriodoId(Number(e.target.value));
+                }}
                 disabled={loading}
                 style={{
                   width: '100%',
@@ -118,7 +134,7 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
                   color: 'var(--text-main)',
                   outline: 'none',
                   transition: 'border-color 0.2s',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
                 }}
               >
                 {[1, 2, 3, 4].map((p) => (
@@ -134,7 +150,9 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
               type="number"
               required
               value={anio}
-              onChange={(e) => { setAnio(Number(e.target.value)); }}
+              onChange={(e) => {
+                setAnio(Number(e.target.value));
+              }}
               disabled={loading}
             />
           </div>
@@ -142,7 +160,9 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
           <div
             onDragOver={handleDragOver}
             onDrop={handleDrop}
-            onClick={() => { fileInputRef.current?.click(); }}
+            onClick={() => {
+              fileInputRef.current?.click();
+            }}
             style={{
               border: '2px dashed var(--border)',
               borderRadius: 'var(--radius-lg, 12px)',
@@ -155,10 +175,14 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '12px'
+              gap: '12px',
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--primary)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border)'; }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'var(--primary)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border)';
+            }}
           >
             <input
               type="file"
@@ -172,7 +196,9 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
               <>
                 <FileSpreadsheet size={40} color="var(--status-green)" />
                 <div>
-                  <p style={{ fontWeight: 600, margin: '0 0 4px 0', color: 'var(--text-main)' }}>{file.name}</p>
+                  <p style={{ fontWeight: 600, margin: '0 0 4px 0', color: 'var(--text-main)' }}>
+                    {file.name}
+                  </p>
                   <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0 }}>
                     {(file.size / 1024).toFixed(1)} KB — Listo para procesar
                   </p>
@@ -193,7 +219,9 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
             )}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '8px' }}>
+          <div
+            style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '8px' }}
+          >
             <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
               Cancelar
             </Button>
@@ -204,14 +232,24 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
         </form>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              borderBottom: '1px solid var(--border)',
+              paddingBottom: '16px',
+            }}
+          >
             {result.errors === 0 ? (
               <CheckCircle size={32} color="var(--status-green)" />
             ) : (
               <AlertCircle size={32} color="var(--status-yellow)" />
             )}
             <div>
-              <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>Carga Masiva Completada</h4>
+              <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>
+                Carga Masiva Completada
+              </h4>
               <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-muted)' }}>
                 Se procesaron {result.processed} registros en total.
               </p>
@@ -219,26 +257,130 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-            <div style={{ backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px', textAlign: 'center', border: '1px solid var(--border)' }}>
-              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0 0 4px 0' }}>Procesados</p>
-              <p style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0, color: 'var(--text-main)' }}>{result.processed}</p>
+            <div
+              style={{
+                backgroundColor: '#f8fafc',
+                padding: '16px',
+                borderRadius: '8px',
+                textAlign: 'center',
+                border: '1px solid var(--border)',
+              }}
+            >
+              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0 0 4px 0' }}>
+                Procesados
+              </p>
+              <p
+                style={{
+                  fontSize: '1.75rem',
+                  fontWeight: 700,
+                  margin: 0,
+                  color: 'var(--text-main)',
+                }}
+              >
+                {result.processed}
+              </p>
             </div>
-            <div style={{ backgroundColor: 'var(--status-green-bg)', padding: '16px', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-              <p style={{ fontSize: '0.875rem', color: 'var(--status-green)', margin: '0 0 4px 0', fontWeight: 500 }}>Exitosos</p>
-              <p style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0, color: 'var(--status-green)' }}>{result.success}</p>
+            <div
+              style={{
+                backgroundColor: 'var(--status-green-bg)',
+                padding: '16px',
+                borderRadius: '8px',
+                textAlign: 'center',
+                border: '1px solid rgba(16, 185, 129, 0.2)',
+              }}
+            >
+              <p
+                style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--status-green)',
+                  margin: '0 0 4px 0',
+                  fontWeight: 500,
+                }}
+              >
+                Exitosos
+              </p>
+              <p
+                style={{
+                  fontSize: '1.75rem',
+                  fontWeight: 700,
+                  margin: 0,
+                  color: 'var(--status-green)',
+                }}
+              >
+                {result.success}
+              </p>
             </div>
-            <div style={{ backgroundColor: result.errors > 0 ? 'var(--status-red-bg)' : '#f8fafc', padding: '16px', borderRadius: '8px', textAlign: 'center', border: result.errors > 0 ? '1px solid rgba(239, 68, 68, 0.2)' : '1px solid var(--border)' }}>
-              <p style={{ fontSize: '0.875rem', color: result.errors > 0 ? 'var(--status-red)' : 'var(--text-muted)', margin: '0 0 4px 0', fontWeight: 500 }}>Fallidos</p>
-              <p style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0, color: result.errors > 0 ? 'var(--status-red)' : 'var(--text-muted)' }}>{result.errors}</p>
+            <div
+              style={{
+                backgroundColor: result.errors > 0 ? 'var(--status-red-bg)' : '#f8fafc',
+                padding: '16px',
+                borderRadius: '8px',
+                textAlign: 'center',
+                border:
+                  result.errors > 0
+                    ? '1px solid rgba(239, 68, 68, 0.2)'
+                    : '1px solid var(--border)',
+              }}
+            >
+              <p
+                style={{
+                  fontSize: '0.875rem',
+                  color: result.errors > 0 ? 'var(--status-red)' : 'var(--text-muted)',
+                  margin: '0 0 4px 0',
+                  fontWeight: 500,
+                }}
+              >
+                Fallidos
+              </p>
+              <p
+                style={{
+                  fontSize: '1.75rem',
+                  fontWeight: 700,
+                  margin: 0,
+                  color: result.errors > 0 ? 'var(--status-red)' : 'var(--text-muted)',
+                }}
+              >
+                {result.errors}
+              </p>
             </div>
           </div>
 
           {result.error_details.length > 0 && (
             <div>
-              <h5 style={{ margin: '0 0 8px 0', fontWeight: 600, fontSize: '0.875rem', color: 'var(--text-main)' }}>Detalle de Errores:</h5>
-              <div style={{ maxHeight: '180px', overflowY: 'auto', border: '1px solid var(--border)', borderRadius: '8px', padding: '12px', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <h5
+                style={{
+                  margin: '0 0 8px 0',
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
+                  color: 'var(--text-main)',
+                }}
+              >
+                Detalle de Errores:
+              </h5>
+              <div
+                style={{
+                  maxHeight: '180px',
+                  overflowY: 'auto',
+                  border: '1px solid var(--border)',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  backgroundColor: '#fff',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                }}
+              >
                 {result.error_details.map((detail, index) => (
-                  <div key={`massive-err-${index.toString()}`} style={{ fontSize: '0.875rem', color: 'var(--status-red)', display: 'flex', gap: '6px', alignItems: 'flex-start' }}>
+                  <div
+                    key={`massive-err-${index.toString()}`}
+                    style={{
+                      fontSize: '0.875rem',
+                      color: 'var(--status-red)',
+                      display: 'flex',
+                      gap: '6px',
+                      alignItems: 'flex-start',
+                    }}
+                  >
                     <span style={{ fontWeight: 600 }}>•</span>
                     <span>{detail}</span>
                   </div>
@@ -247,7 +389,9 @@ export const MassiveEnrollmentModal: React.FC<MassiveEnrollmentModalProps> = ({
             </div>
           )}
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '8px' }}>
+          <div
+            style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '8px' }}
+          >
             {result.errors > 0 && (
               <Button type="button" variant="outline" onClick={handleReset}>
                 Intentar Nuevamente

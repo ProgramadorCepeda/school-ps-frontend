@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Calendar, Loader, Receipt, AlertCircle } from 'lucide-react';
-import { Modal } from '../../../shared/ui/Modal';
+import { Modal } from '../../../shared/ui/atoms/Modal';
 import { Button } from '../../../shared/ui/atoms/Button';
 import { enrollmentApi } from '../../../entities/student/api/enrollment';
 import type { PaymentHistoryItem } from '../../../entities/student/api/enrollment';
@@ -17,7 +17,7 @@ export const AuditHistoryModal: React.FC<AuditHistoryModalProps> = ({
   isOpen,
   onClose,
   studentId,
-  studentName
+  studentName,
 }) => {
   const [payments, setPayments] = useState<PaymentHistoryItem[]>([]);
   const [year, setYear] = useState(() => new Date().getFullYear());
@@ -37,7 +37,10 @@ export const AuditHistoryModal: React.FC<AuditHistoryModalProps> = ({
       setPayments(data);
     } catch (err: unknown) {
       console.error(err);
-      const msg = err instanceof Error ? err.message : 'No se pudo cargar el historial de pagos del estudiante.';
+      const msg =
+        err instanceof Error
+          ? err.message
+          : 'No se pudo cargar el historial de pagos del estudiante.';
       setError(msg);
     } finally {
       setLoading(false);
@@ -66,7 +69,7 @@ export const AuditHistoryModal: React.FC<AuditHistoryModalProps> = ({
       return date.toLocaleDateString('es-CO', {
         year: 'numeric',
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
       });
     } catch {
       return dateStr;
@@ -75,17 +78,41 @@ export const AuditHistoryModal: React.FC<AuditHistoryModalProps> = ({
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} title={`Historial de Pagos - ${studentName}`} width={700}>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={`Historial de Pagos - ${studentName}`}
+        width={700}
+      >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Filters Bar */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8fafc', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              backgroundColor: '#f8fafc',
+              padding: '12px 16px',
+              borderRadius: '8px',
+              border: '1px solid var(--border)',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: 'var(--text-muted)',
+              }}
+            >
               <Calendar size={18} />
               <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>Filtrar por año lectivo</span>
             </div>
             <select
               value={year}
-              onChange={(e) => { setYear(Number(e.target.value)); }}
+              onChange={(e) => {
+                setYear(Number(e.target.value));
+              }}
               disabled={loading}
               style={{
                 padding: '6px 12px',
@@ -95,7 +122,7 @@ export const AuditHistoryModal: React.FC<AuditHistoryModalProps> = ({
                 fontSize: '0.875rem',
                 color: 'var(--text-main)',
                 outline: 'none',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
               {[2024, 2025, 2026, 2027].map((y) => (
@@ -108,7 +135,19 @@ export const AuditHistoryModal: React.FC<AuditHistoryModalProps> = ({
 
           {/* Error Message */}
           {error && (
-            <div style={{ padding: '12px', borderRadius: '6px', backgroundColor: 'var(--status-red-bg)', color: 'var(--status-red)', fontSize: '0.875rem', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div
+              style={{
+                padding: '12px',
+                borderRadius: '6px',
+                backgroundColor: 'var(--status-red-bg)',
+                color: 'var(--status-red)',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
               <AlertCircle size={18} />
               {error}
             </div>
@@ -130,7 +169,14 @@ export const AuditHistoryModal: React.FC<AuditHistoryModalProps> = ({
                 {loading ? (
                   <tr>
                     <td colSpan={5} style={{ textAlign: 'center', padding: '24px 0' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                        }}
+                      >
                         <Loader className="animate-spin" size={16} color="var(--primary)" />
                         <span>Cargando historial de pagos...</span>
                       </div>
@@ -138,7 +184,10 @@ export const AuditHistoryModal: React.FC<AuditHistoryModalProps> = ({
                   </tr>
                 ) : payments.length === 0 ? (
                   <tr>
-                    <td colSpan={5} style={{ textAlign: 'center', padding: '24px 0', color: 'var(--text-muted)' }}>
+                    <td
+                      colSpan={5}
+                      style={{ textAlign: 'center', padding: '24px 0', color: 'var(--text-muted)' }}
+                    >
                       No se encontraron abonos ni pagos registrados para este año lectivo.
                     </td>
                   </tr>
@@ -150,20 +199,27 @@ export const AuditHistoryModal: React.FC<AuditHistoryModalProps> = ({
                       <td style={{ fontWeight: 600, color: 'var(--status-green)' }}>
                         ${p.monto_total.toLocaleString()}
                       </td>
-                      <td style={{ color: p.observacion ? 'var(--text-main)' : 'var(--text-muted)', fontSize: '0.8rem' }}>
+                      <td
+                        style={{
+                          color: p.observacion ? 'var(--text-main)' : 'var(--text-muted)',
+                          fontSize: '0.8rem',
+                        }}
+                      >
                         {p.observacion ?? 'Sin observación'}
                       </td>
                       <td style={{ textAlign: 'center' }}>
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => { handleOpenReceipt(p.id); }}
+                          onClick={() => {
+                            handleOpenReceipt(p.id);
+                          }}
                           style={{
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: '6px',
                             padding: '4px 10px',
-                            fontSize: '0.8rem'
+                            fontSize: '0.8rem',
                           }}
                         >
                           <Receipt size={14} />

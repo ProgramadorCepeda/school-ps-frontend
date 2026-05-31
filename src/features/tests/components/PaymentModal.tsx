@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { DollarSign, X } from "lucide-react";
-import type { PruebaAssignment } from "../../../entities/tests/model/types";
+import { useState } from 'react';
+import { DollarSign, X } from 'lucide-react';
+import type { PruebaAssignment } from '@/entities/tests/model/types';
 
 interface PaymentModalProps {
   item: PruebaAssignment;
@@ -16,21 +16,21 @@ export function PaymentModal({ item, onClose, onConfirm }: PaymentModalProps) {
   const handlePay = async () => {
     const val = parseInt(monto);
     if (isNaN(val) || val <= 0) {
-      alert("Ingresa un monto válido");
+      alert('Ingresa un monto válido');
       return;
     }
     if (val > saldoPendiente) {
-      alert("El monto no puede ser mayor al saldo pendiente");
+      alert('El monto no puede ser mayor al saldo pendiente');
       return;
     }
-    
+
     setLoading(true);
     try {
       await onConfirm(val);
       onClose();
     } catch (e) {
       console.error(e);
-      alert("Error al procesar el pago");
+      alert('Error al procesar el pago');
     } finally {
       setLoading(false);
     }
@@ -48,20 +48,26 @@ export function PaymentModal({ item, onClose, onConfirm }: PaymentModalProps) {
             <X className="w-5 h-5" />
           </button>
         </div>
-        
+
         <div className="p-6">
           <div className="bg-blue-50 text-blue-800 p-4 rounded-lg mb-6 text-sm">
-            Estudiante: <strong>{item.estudianteNombre}</strong><br />
-            Prueba: <strong>{item.pruebaNombre}</strong><br />
+            Estudiante: <strong>{item.estudianteNombre}</strong>
+            <br />
+            Prueba: <strong>{item.pruebaNombre}</strong>
+            <br />
             Saldo Pendiente: <strong>${saldoPendiente.toLocaleString()}</strong>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Monto a abonar ($)</label>
-            <input 
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Monto a abonar ($)
+            </label>
+            <input
               type="number"
               value={monto}
-              onChange={(e) => { setMonto(e.target.value); }}
+              onChange={(e) => {
+                setMonto(e.target.value);
+              }}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition-all"
               placeholder="Ej. 20000"
               autoFocus
@@ -70,25 +76,23 @@ export function PaymentModal({ item, onClose, onConfirm }: PaymentModalProps) {
         </div>
 
         <div className="px-6 py-4 bg-gray-50 flex justify-end gap-3 border-t border-gray-100">
-          <button 
+          <button
             onClick={onClose}
             className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors font-medium"
           >
             Cancelar
           </button>
-          <button 
-            onClick={() => { void handlePay(); }}
+          <button
+            onClick={() => {
+              void handlePay();
+            }}
             disabled={loading}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm disabled:opacity-50"
           >
-            {loading ? "Procesando..." : "Confirmar Pago"}
+            {loading ? 'Procesando...' : 'Confirmar Pago'}
           </button>
         </div>
       </div>
     </div>
   );
 }
-
-
-
-

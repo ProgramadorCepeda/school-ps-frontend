@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal } from '../../../shared/ui/Modal';
+import { Modal } from '../../../shared/ui/atoms/Modal';
 import { Button } from '../../../shared/ui/atoms/Button';
 import { Input } from '../../../shared/ui/atoms/Input';
 import { enrollmentApi } from '../../../entities/student/api/enrollment';
@@ -22,13 +22,13 @@ const GRADES = [
   'Octavo',
   'Noveno',
   'Décimo',
-  'Once'
+  'Once',
 ];
 
 export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
   isOpen,
   onClose,
-  onSuccess
+  onSuccess,
 }) => {
   const [documento, setDocumento] = useState('');
   const [nombre, setNombre] = useState('');
@@ -52,17 +52,17 @@ export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
         grado,
         nombre_acudiente: nombreAcudiente.trim(),
         periodo_id: periodoId,
-        anio: anio
+        anio: anio,
       });
 
       // 2. Fetch the newly created student by document to get their student ID
       const searchRes = await enrollmentApi.searchStudents({
         documento: documento.trim(),
-        year: anio
+        year: anio,
       });
 
       const matchedStudent = searchRes.estudiantes.find(
-        (s) => s.documento.trim() === documento.trim()
+        (s) => s.documento.trim() === documento.trim(),
       );
 
       if (matchedStudent) {
@@ -72,12 +72,17 @@ export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
         if (searchRes.estudiantes.length > 0) {
           onSuccess(searchRes.estudiantes[0].estudiante_id);
         } else {
-          throw new Error('Estudiante matriculado, pero no se pudo encontrar en la base de datos para redirección.');
+          throw new Error(
+            'Estudiante matriculado, pero no se pudo encontrar en la base de datos para redirección.',
+          );
         }
       }
     } catch (err: unknown) {
       console.error(err);
-      const msg = err instanceof Error ? err.message : 'Ocurrió un error inesperado al matricular al estudiante.';
+      const msg =
+        err instanceof Error
+          ? err.message
+          : 'Ocurrió un error inesperado al matricular al estudiante.';
       setError(msg);
     } finally {
       setLoading(false);
@@ -86,9 +91,23 @@ export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Matrícula Manual Individual" width={520}>
-      <form onSubmit={(e) => { void handleSubmit(e); }} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <form
+        onSubmit={(e) => {
+          void handleSubmit(e);
+        }}
+        style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+      >
         {error && (
-          <div style={{ padding: '12px', borderRadius: '6px', backgroundColor: 'var(--status-red-bg)', color: 'var(--status-red)', fontSize: '0.875rem', fontWeight: 500 }}>
+          <div
+            style={{
+              padding: '12px',
+              borderRadius: '6px',
+              backgroundColor: 'var(--status-red-bg)',
+              color: 'var(--status-red)',
+              fontSize: '0.875rem',
+              fontWeight: 500,
+            }}
+          >
             {error}
           </div>
         )}
@@ -98,7 +117,9 @@ export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
           placeholder="Ej: 100293847"
           required
           value={documento}
-          onChange={(e) => { setDocumento(e.target.value); }}
+          onChange={(e) => {
+            setDocumento(e.target.value);
+          }}
           disabled={loading}
         />
 
@@ -107,7 +128,9 @@ export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
           placeholder="Ej: Juan Sebastián Pérez López"
           required
           value={nombre}
-          onChange={(e) => { setNombre(e.target.value); }}
+          onChange={(e) => {
+            setNombre(e.target.value);
+          }}
           disabled={loading}
         />
 
@@ -115,7 +138,9 @@ export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
           <label className="input-label">Grado *</label>
           <select
             value={grado}
-            onChange={(e) => { setGrado(e.target.value); }}
+            onChange={(e) => {
+              setGrado(e.target.value);
+            }}
             disabled={loading}
             style={{
               width: '100%',
@@ -127,7 +152,7 @@ export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
               color: 'var(--text-main)',
               outline: 'none',
               transition: 'border-color 0.2s',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             {GRADES.map((g) => (
@@ -143,7 +168,9 @@ export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
           placeholder="Ej: María Clara López (Madre)"
           required
           value={nombreAcudiente}
-          onChange={(e) => { setNombreAcudiente(e.target.value); }}
+          onChange={(e) => {
+            setNombreAcudiente(e.target.value);
+          }}
           disabled={loading}
         />
 
@@ -152,7 +179,9 @@ export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
             <label className="input-label">Periodo Académico *</label>
             <select
               value={periodoId}
-              onChange={(e) => { setPeriodoId(Number(e.target.value)); }}
+              onChange={(e) => {
+                setPeriodoId(Number(e.target.value));
+              }}
               disabled={loading}
               style={{
                 width: '100%',
@@ -164,7 +193,7 @@ export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
                 color: 'var(--text-main)',
                 outline: 'none',
                 transition: 'border-color 0.2s',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
               {[1, 2, 3, 4].map((p) => (
@@ -180,7 +209,9 @@ export const ManualEnrollmentModal: React.FC<ManualEnrollmentModalProps> = ({
             type="number"
             required
             value={anio}
-            onChange={(e) => { setAnio(Number(e.target.value)); }}
+            onChange={(e) => {
+              setAnio(Number(e.target.value));
+            }}
             disabled={loading}
           />
         </div>
