@@ -1,9 +1,22 @@
 import React, { useState } from 'react';
 import { useNavigate, useRouterState, Link, Outlet } from '@tanstack/react-router';
-import { 
-  LayoutDashboard, Shield, CreditCard, Calendar, GraduationCap, Sofa, 
-  FileText, Dumbbell, Trophy, Coffee, School, Music, Building, 
-  LogOut, User, X
+import {
+  LayoutDashboard,
+  Shield,
+  CreditCard,
+  Calendar,
+  GraduationCap,
+  Sofa,
+  FileText,
+  Dumbbell,
+  Trophy,
+  Coffee,
+  School,
+  Music,
+  Building,
+  LogOut,
+  User,
+  X,
 } from 'lucide-react';
 import type { LoginUser } from '../../../features/auth/api/authApi';
 import { AppLayout } from '../../../shared/ui/templates/AppLayout';
@@ -16,7 +29,7 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
   const navigate = useNavigate();
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
-  
+
   const [currentUser] = useState<LoginUser | null>(() => {
     const userStr = localStorage.getItem('auth_user');
     if (userStr) {
@@ -75,7 +88,7 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
         <h1>SchoolPS</h1>
         <p>Sistema de Paz y Salvo</p>
       </div>
-      
+
       <nav className="app-sidebar-menu">
         {sidebarItems.map((item) => {
           const IconComp = item.icon;
@@ -84,7 +97,9 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
             <Link
               key={item.path}
               to={item.path}
-              onClick={(e) => { handleItemClick(e, item.path, item.label); }}
+              onClick={(e) => {
+                handleItemClick(e, item.path, item.label);
+              }}
               className={`app-sidebar-item ${active ? 'active' : ''}`}
             >
               <IconComp size={18} />
@@ -100,9 +115,11 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
     <>
       {/* Welcome brand section */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <div 
-          style={{ color: '#801c1c', cursor: 'pointer', display: 'flex', alignItems: 'center' }} 
-          onClick={() => { void navigate({ to: '/dashboard' }); }}
+        <div
+          style={{ color: '#801c1c', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+          onClick={() => {
+            void navigate({ to: '/dashboard' });
+          }}
         >
           <X size={20} />
         </div>
@@ -115,21 +132,30 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
       {currentUser && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              backgroundColor: '#f1f5f9',
-              border: '1px solid var(--border)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--text-main)'
-            }}>
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                backgroundColor: '#f1f5f9',
+                border: '1px solid var(--border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--text-main)',
+              }}
+            >
               <User size={18} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-main)', lineHeight: '1.2' }}>
+              <span
+                style={{
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  color: 'var(--text-main)',
+                  lineHeight: '1.2',
+                }}
+              >
                 {currentUser.username}
               </span>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -138,8 +164,8 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
             </div>
           </div>
 
-          <button 
-            onClick={handleLogout} 
+          <button
+            onClick={handleLogout}
             style={{
               background: 'none',
               border: 'none',
@@ -152,10 +178,14 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
               fontWeight: 500,
               padding: '6px 12px',
               borderRadius: '6px',
-              transition: 'background-color 0.2s'
+              transition: 'background-color 0.2s',
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--status-red-bg)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--status-red-bg)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }}
           >
             <LogOut size={16} />
             Salir

@@ -79,7 +79,11 @@ export interface ModifyEnrollmentResponse {
 const API_BASE = '/api/v1/enrollment';
 
 export const enrollmentApi = {
-  searchStudents: async (params: { documento?: string; nombre?: string; year?: number }): Promise<StudentSearchListResponse> => {
+  searchStudents: async (params: {
+    documento?: string;
+    nombre?: string;
+    year?: number;
+  }): Promise<StudentSearchListResponse> => {
     const query = new URLSearchParams();
     if (params.documento) query.append('documento', params.documento);
     if (params.nombre) query.append('nombre', params.nombre);
@@ -90,15 +94,25 @@ export const enrollmentApi = {
     return response.json() as Promise<StudentSearchListResponse>;
   },
 
-  getStudentBalance: async (studentId: number, year: number = new Date().getFullYear()): Promise<StudentBalance> => {
-    const response = await fetch(`${API_BASE}/students/${studentId.toString()}/balance?year=${year.toString()}`);
+  getStudentBalance: async (
+    studentId: number,
+    year: number = new Date().getFullYear(),
+  ): Promise<StudentBalance> => {
+    const response = await fetch(
+      `${API_BASE}/students/${studentId.toString()}/balance?year=${year.toString()}`,
+    );
     if (!response.ok) throw new Error('Error al obtener balance');
     return response.json() as Promise<StudentBalance>;
   },
 
   registerDirectedPayment: async (payload: {
     matricula_id: number;
-    asignaciones: { concepto: string; complementario_id?: number; detalle_id?: number; monto: number }[];
+    asignaciones: {
+      concepto: string;
+      complementario_id?: number;
+      detalle_id?: number;
+      monto: number;
+    }[];
     codigo_talonario: string;
     observacion?: string;
   }): Promise<PaymentResultResponse> => {
@@ -121,7 +135,7 @@ export const enrollmentApi = {
         detalle_id: number;
         nuevo_valor_completo?: number;
       }[];
-    }
+    },
   ): Promise<ModifyEnrollmentResponse> => {
     const response = await fetch(`${API_BASE}/students/${matriculaId.toString()}/matricula`, {
       method: 'PUT',
@@ -133,5 +147,5 @@ export const enrollmentApi = {
       throw new Error(errData.detail ?? 'Error al modificar matrícula');
     }
     return response.json() as Promise<ModifyEnrollmentResponse>;
-  }
+  },
 };

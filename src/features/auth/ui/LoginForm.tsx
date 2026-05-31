@@ -26,7 +26,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
 
     try {
       const response = await authApi.login({ username, contrasenia });
-      
+
       // Store token and user details in localStorage
       localStorage.setItem('auth_token', response.token);
       localStorage.setItem('auth_user', JSON.stringify(response.usuario));
@@ -42,17 +42,24 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   };
 
   return (
-    <form onSubmit={(e) => { void handleSubmit(e); }} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <form
+      onSubmit={(e) => {
+        void handleSubmit(e);
+      }}
+      style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+    >
       {error && (
-        <div style={{
-          background: 'var(--status-red-bg)',
-          color: '#991b1b',
-          border: '1px solid #fecaca',
-          borderRadius: 'var(--radius-md)',
-          padding: '12px',
-          fontSize: '0.875rem',
-          fontWeight: 500,
-        }}>
+        <div
+          style={{
+            background: 'var(--status-red-bg)',
+            color: '#991b1b',
+            border: '1px solid #fecaca',
+            borderRadius: 'var(--radius-md)',
+            padding: '12px',
+            fontSize: '0.875rem',
+            fontWeight: 500,
+          }}
+        >
           {error}
         </div>
       )}
@@ -62,7 +69,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
         placeholder="Ingrese su nombre de usuario"
         required
         value={username}
-        onChange={(e) => { setUsername(e.target.value); }}
+        onChange={(e) => {
+          setUsername(e.target.value);
+        }}
         disabled={loading}
       />
 
@@ -72,7 +81,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
         placeholder="Ingrese su contraseña"
         required
         value={contrasenia}
-        onChange={(e) => { setContrasenia(e.target.value); }}
+        onChange={(e) => {
+          setContrasenia(e.target.value);
+        }}
         disabled={loading}
       />
 
@@ -83,7 +94,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
         disabled={loading}
         fullWidth
       >
-        {loading ? 'Iniciando sesión...' : (
+        {loading ? (
+          'Iniciando sesión...'
+        ) : (
           <>
             <LogIn size={18} style={{ marginRight: '8px' }} />
             Ingresar al Sistema

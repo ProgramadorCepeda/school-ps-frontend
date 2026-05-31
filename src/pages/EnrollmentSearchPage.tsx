@@ -37,7 +37,7 @@ export const EnrollmentSearch: React.FC = () => {
         <p style={{ color: 'var(--text-muted)' }}>Gestión de matrículas y pagos</p>
       </div>
 
-      <SearchStudentForm 
+      <SearchStudentForm
         onSearchStart={handleSearchStart}
         onSearchEnd={handleSearchEnd}
         onSearchSuccess={handleSearchSuccess}
@@ -59,19 +59,40 @@ export const EnrollmentSearch: React.FC = () => {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={8} style={{ textAlign: 'center' }}>Cargando...</td></tr>
+              <tr>
+                <td colSpan={8} style={{ textAlign: 'center' }}>
+                  Cargando...
+                </td>
+              </tr>
             ) : students.length === 0 ? (
-              <tr><td colSpan={8} style={{ textAlign: 'center' }}>No se encontraron resultados</td></tr>
+              <tr>
+                <td colSpan={8} style={{ textAlign: 'center' }}>
+                  No se encontraron resultados
+                </td>
+              </tr>
             ) : (
-              students.map(student => (
-                <tr key={student.estudiante_id} onClick={() => { setSelectedStudent(student.estudiante_id); }} style={{ cursor: 'pointer' }}>
+              students.map((student) => (
+                <tr
+                  key={student.estudiante_id}
+                  onClick={() => {
+                    setSelectedStudent(student.estudiante_id);
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
                   <td>
-                    <input 
-                      type="radio" 
-                      name="studentSelect" 
+                    <input
+                      type="radio"
+                      name="studentSelect"
                       checked={selectedStudent === student.estudiante_id}
-                      onChange={() => { setSelectedStudent(student.estudiante_id); }}
-                      style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: '#1d4ed8' }}
+                      onChange={() => {
+                        setSelectedStudent(student.estudiante_id);
+                      }}
+                      style={{
+                        cursor: 'pointer',
+                        width: '16px',
+                        height: '16px',
+                        accentColor: '#1d4ed8',
+                      }}
                     />
                   </td>
                   <td>{student.documento}</td>
@@ -91,7 +112,17 @@ export const EnrollmentSearch: React.FC = () => {
       </div>
 
       {selectedStudent !== null && (
-        <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div
+          style={{
+            background: '#eff6ff',
+            border: '1px solid #bfdbfe',
+            borderRadius: '8px',
+            padding: '16px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <p style={{ color: '#1e3a8a', margin: 0 }}>
             Ha seleccionado un estudiante. Puede continuar con la gestión de matrícula.
           </p>

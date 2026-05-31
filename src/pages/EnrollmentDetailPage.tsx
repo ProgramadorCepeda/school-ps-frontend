@@ -15,7 +15,12 @@ export const EnrollmentDetail: React.FC = () => {
 
   // Edit Modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editConcept, setEditConcept] = useState<{ id: string; name: string; currentVal: number; detalleId?: number } | null>(null);
+  const [editConcept, setEditConcept] = useState<{
+    id: string;
+    name: string;
+    currentVal: number;
+    detalleId?: number;
+  } | null>(null);
 
   const fetchBalance = useCallback(async () => {
     if (!id) return;
@@ -39,7 +44,12 @@ export const EnrollmentDetail: React.FC = () => {
     };
   }, [fetchBalance]);
 
-  const openEditModal = (conceptId: string, name: string, currentVal: number, detalleId?: number) => {
+  const openEditModal = (
+    conceptId: string,
+    name: string,
+    currentVal: number,
+    detalleId?: number,
+  ) => {
     setEditConcept({ id: conceptId, name, currentVal, detalleId });
     setIsEditModalOpen(true);
   };
@@ -49,18 +59,47 @@ export const EnrollmentDetail: React.FC = () => {
   };
 
   if (loading) {
-    return <div style={{ padding: '2rem', textAlign: 'center' }}>Cargando información del estudiante...</div>;
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        Cargando información del estudiante...
+      </div>
+    );
   }
 
   if (!balance) {
-    return <div style={{ padding: '2rem', textAlign: 'center' }}>No se pudo cargar la información.</div>;
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>No se pudo cargar la información.</div>
+    );
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* Header and navigation */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
-        <button onClick={() => { window.history.back(); }} style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500 }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderBottom: '1px solid var(--border)',
+          paddingBottom: '16px',
+        }}
+      >
+        <button
+          onClick={() => {
+            window.history.back();
+          }}
+          style={{
+            background: 'none',
+            border: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            color: 'var(--primary)',
+            cursor: 'pointer',
+            fontSize: '0.875rem',
+            fontWeight: 500,
+          }}
+        >
           <ArrowLeft size={16} /> Volver a búsqueda
         </button>
         <Button variant="outline" size="sm">
@@ -74,8 +113,14 @@ export const EnrollmentDetail: React.FC = () => {
           <User size={24} color="var(--text-muted)" />
           <h2 style={{ fontSize: '1.25rem', margin: 0 }}>{balance.estudiante.nombre}</h2>
         </div>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '16px' }}>
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+            gap: '16px',
+          }}
+        >
           <div>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Código</p>
             <p style={{ fontWeight: 500 }}>{balance.estudiante.documento}</p>
@@ -101,71 +146,157 @@ export const EnrollmentDetail: React.FC = () => {
 
       {/* Conceptos Económicos */}
       <div className="card" style={{ padding: '0', overflow: 'hidden', marginBottom: 0 }}>
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '8px', background: '#f8fafc' }}>
+        <div
+          style={{
+            padding: '16px 20px',
+            borderBottom: '1px solid var(--border)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: '#f8fafc',
+          }}
+        >
           <FileText size={20} color="var(--text-muted)" />
           <h3 style={{ margin: 0, fontSize: '1rem' }}>Conceptos Económicos Parametrizados</h3>
         </div>
-        
+
         <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', border: '1px solid var(--border)', borderRadius: '8px', background: '#fff' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '16px',
+              border: '1px solid var(--border)',
+              borderRadius: '8px',
+              background: '#fff',
+            }}
+          >
             <div>
               <p style={{ fontWeight: 600, margin: 0 }}>Matrícula Base</p>
-              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0 }}>Valor base</p>
+              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0 }}>
+                Valor base
+              </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <p style={{ fontWeight: 600, fontSize: '1.1rem', margin: 0 }}>${balance.costo_base_matricula.toLocaleString()}</p>
-              <button 
-                onClick={() => { openEditModal('matricula_base', 'Matrícula Base', balance.costo_base_matricula); }}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary)', padding: '4px' }}
+              <p style={{ fontWeight: 600, fontSize: '1.1rem', margin: 0 }}>
+                ${balance.costo_base_matricula.toLocaleString()}
+              </p>
+              <button
+                onClick={() => {
+                  openEditModal('matricula_base', 'Matrícula Base', balance.costo_base_matricula);
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--primary)',
+                  padding: '4px',
+                }}
               >
                 <Edit size={18} />
               </button>
             </div>
           </div>
 
-          {balance.complementarios.map(comp => (
-             <div key={comp.detalle_id.toString()} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', border: '1px solid var(--border)', borderRadius: '8px', background: '#fff' }}>
-             <div>
-               <p style={{ fontWeight: 600, margin: 0 }}>{comp.tipo_complementario}</p>
-               <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0 }}>Concepto complementario</p>
-             </div>
-             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <p style={{ fontWeight: 600, fontSize: '1.1rem', margin: 0 }}>${comp.valor_completo.toLocaleString()}</p>
-                <button 
-                  onClick={() => { openEditModal(`comp_${comp.complementario_id.toString()}`, comp.tipo_complementario, comp.valor_completo, comp.detalle_id); }}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary)', padding: '4px' }}
+          {balance.complementarios.map((comp) => (
+            <div
+              key={comp.detalle_id.toString()}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '16px',
+                border: '1px solid var(--border)',
+                borderRadius: '8px',
+                background: '#fff',
+              }}
+            >
+              <div>
+                <p style={{ fontWeight: 600, margin: 0 }}>{comp.tipo_complementario}</p>
+                <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0 }}>
+                  Concepto complementario
+                </p>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <p style={{ fontWeight: 600, fontSize: '1.1rem', margin: 0 }}>
+                  ${comp.valor_completo.toLocaleString()}
+                </p>
+                <button
+                  onClick={() => {
+                    openEditModal(
+                      `comp_${comp.complementario_id.toString()}`,
+                      comp.tipo_complementario,
+                      comp.valor_completo,
+                      comp.detalle_id,
+                    );
+                  }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: 'var(--primary)',
+                    padding: '4px',
+                  }}
                 >
                   <Edit size={18} />
                 </button>
               </div>
-           </div>
+            </div>
           ))}
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', borderRadius: '8px', background: '#eff6ff', border: '1px solid #bfdbfe', marginTop: '8px' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '16px',
+              borderRadius: '8px',
+              background: '#eff6ff',
+              border: '1px solid #bfdbfe',
+              marginTop: '8px',
+            }}
+          >
             <p style={{ fontWeight: 700, margin: 0, color: '#1e3a8a' }}>Total Matrícula</p>
-            <p style={{ fontWeight: 700, fontSize: '1.25rem', margin: 0, color: '#1d4ed8' }}>${balance.costo_total.toLocaleString()}</p>
+            <p style={{ fontWeight: 700, fontSize: '1.25rem', margin: 0, color: '#1d4ed8' }}>
+              ${balance.costo_total.toLocaleString()}
+            </p>
           </div>
         </div>
       </div>
 
       {/* Saldo Pendiente */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px', borderRadius: '8px', background: '#fefce8', border: '1px solid #fef08a' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '20px',
+          borderRadius: '8px',
+          background: '#fefce8',
+          border: '1px solid #fef08a',
+        }}
+      >
         <p style={{ fontWeight: 700, margin: 0, color: '#854d0e' }}>Saldo Pendiente</p>
-        <p style={{ fontWeight: 700, fontSize: '1.25rem', margin: 0, color: '#92400e' }}>${balance.total_pendiente.toLocaleString()}</p>
+        <p style={{ fontWeight: 700, fontSize: '1.25rem', margin: 0, color: '#92400e' }}>
+          ${balance.total_pendiente.toLocaleString()}
+        </p>
       </div>
 
       {/* Registrar Pago Form (Feature) */}
-      <PayEnrollmentForm 
+      <PayEnrollmentForm
         key={`${balance.estudiante.id.toString()}-${balance.total_pendiente.toString()}-${balance.pagos_realizados.toString()}`}
         balance={balance}
         onPaymentSuccess={handleRefresh}
       />
 
       {/* Edit Modal (Feature) */}
-      <ModifyEnrollmentModal 
+      <ModifyEnrollmentModal
         key={editConcept ? `${editConcept.id}-${editConcept.currentVal.toString()}` : 'closed'}
         isOpen={isEditModalOpen}
-        onClose={() => { setIsEditModalOpen(false); }}
+        onClose={() => {
+          setIsEditModalOpen(false);
+        }}
         balance={balance}
         concept={editConcept}
         onEditSuccess={handleRefresh}
