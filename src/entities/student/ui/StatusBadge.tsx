@@ -7,7 +7,7 @@ interface StatusBadgeProps {
 }
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, label }) => {
-  let variant: 'green' | 'yellow' | 'red' | 'neutral' = 'neutral';
+  let variant: 'green' | 'yellow' | 'red' | 'gray' = 'gray';
   let defaultLabel = status;
 
   if (status === 'paz_y_salvo' || status === 'solvente') {
@@ -20,16 +20,12 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, label }) => {
     variant = 'yellow';
     defaultLabel = 'Pendiente';
   } else if (status === 'sin_matricula') {
-    variant = 'neutral';
+    variant = 'gray';
     defaultLabel = 'Sin Matrícula';
   } else if (status === 'no_paz_y_salvo') {
     variant = 'red';
     defaultLabel = 'No Paz y Salvo';
   }
 
-  return (
-    <Badge variant={variant}>
-      {label ?? defaultLabel}
-    </Badge>
-  );
+  return <Badge variant={variant}>{label ?? defaultLabel}</Badge>;
 };
