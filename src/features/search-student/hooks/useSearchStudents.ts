@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { searchStudents } from '../api/searchApi';
 import type { StudentSearchListResponse } from '../types';
 
@@ -7,7 +7,7 @@ export const useSearchStudents = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchStudents = async (params: { documento?: string; nombre?: string; year?: number }) => {
+  const fetchStudents = useCallback(async (params: { documento?: string; nombre?: string; year?: number }) => {
     setLoading(true);
     setError(null);
     try {
@@ -20,7 +20,7 @@ export const useSearchStudents = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return { data, loading, error, fetchStudents };
 };
