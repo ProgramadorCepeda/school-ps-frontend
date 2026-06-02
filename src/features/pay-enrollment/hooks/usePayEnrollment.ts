@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { registerDirectedPayment } from '../api/payApi';
 
-
 export const usePayEnrollment = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -12,8 +11,8 @@ export const usePayEnrollment = () => {
     try {
       const response = await registerDirectedPayment(payload);
       return response;
-    } catch (err: any) {
-      setError(err.message || 'Error al registrar el pago');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al registrar el pago');
       throw err;
     } finally {
       setLoading(false);

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { useModifyEnrollment } from '../hooks/useModifyEnrollment';
 import type { StudentBalance } from '@/entities/student/model/types';
-import { Button } from '../../../shared/ui/atoms/Button';
-import { Input } from '../../../shared/ui/atoms/Input';
-import { Modal } from '../../../shared/ui/molecules/Modal';
+import { Button } from '@/shared/ui/atoms/Button';
+import { Input } from '@/shared/ui/atoms/Input';
+import { Modal } from '@/shared/ui/molecules/Modal';
 
 interface ModifyEnrollmentModalProps {
   isOpen: boolean;
@@ -14,13 +14,13 @@ interface ModifyEnrollmentModalProps {
   onEditSuccess: () => Promise<void>;
 }
 
-export const ModifyEnrollmentModal: React.FC<ModifyEnrollmentModalProps> = ({
+export const ModifyEnrollmentModal = ({
   isOpen,
   onClose,
   balance,
   concept,
   onEditSuccess,
-}) => {
+}: ModifyEnrollmentModalProps) => {
   const [newVal, setNewVal] = useState('');
   const [editReason, setEditReason] = useState('');
   const [editObs, setEditObs] = useState('');
@@ -156,7 +156,12 @@ export const ModifyEnrollmentModal: React.FC<ModifyEnrollmentModalProps> = ({
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancelar
           </Button>
-          <Button type="submit" variant="primary" style={{ backgroundColor: '#991b1b' }} disabled={loading}>
+          <Button
+            type="submit"
+            variant="primary"
+            style={{ backgroundColor: '#991b1b' }}
+            disabled={loading}
+          >
             {loading ? 'Confirmando...' : 'Confirmar Edición'}
           </Button>
         </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { modifyEnrollment } from '../api/modifyApi';
+import { modifyEnrollment, deleteComplementaryDetail } from '../api/modifyApi';
 
 export const useModifyEnrollment = () => {
   const [loading, setLoading] = useState(false);
@@ -7,20 +7,34 @@ export const useModifyEnrollment = () => {
 
   const submitModification = async (
     matriculaId: number,
-    payload: Parameters<typeof modifyEnrollment>[1]
+    payload: Parameters<typeof modifyEnrollment>[1],
   ) => {
     setLoading(true);
     setError(null);
     try {
       const response = await modifyEnrollment(matriculaId, payload);
       return response;
-    } catch (err: any) {
-      setError(err.message || 'Error al modificar matrícula');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al modificar matrícula');
       throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  return { submitModification, loading, error };
+  const submitDelete = async (detalleId: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await deleteComplementaryDetail(detalleId);
+      return response;
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al desvincular concepto');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { submitModification, submitDelete, loading, error };
 };

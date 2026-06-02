@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Search } from 'lucide-react';
 import { useSearchStudents } from '../hooks/useSearchStudents';
 import type { StudentSearchItem } from '@/entities/student/model/types';
-import { Button } from '../../../shared/ui/atoms/Button';
-import { Input } from '../../../shared/ui/atoms/Input';
+import { Button } from '@/shared/ui/atoms/Button';
+import { Input } from '@/shared/ui/atoms/Input';
 
 interface SearchStudentFormProps {
   onSearchSuccess: (students: StudentSearchItem[]) => void;
@@ -11,11 +11,11 @@ interface SearchStudentFormProps {
   onSearchEnd: () => void;
 }
 
-export const SearchStudentForm: React.FC<SearchStudentFormProps> = ({
+export const SearchStudentForm = ({
   onSearchSuccess,
   onSearchStart,
   onSearchEnd,
-}) => {
+}: SearchStudentFormProps) => {
   const { loading, fetchStudents } = useSearchStudents();
   const [filters, setFilters] = useState({ documento: '', nombre: '', date: '' });
 
@@ -26,14 +26,14 @@ export const SearchStudentForm: React.FC<SearchStudentFormProps> = ({
         const data = await fetchStudents(
           isInitial ? {} : { documento: filters.documento, nombre: filters.nombre },
         );
-        if (data) onSearchSuccess(data.estudiantes);
+        onSearchSuccess(data.estudiantes);
       } catch (error) {
         console.error('Error fetching students:', error);
       } finally {
         onSearchEnd();
       }
     },
-    [filters.documento, filters.nombre, onSearchStart, onSearchEnd, onSearchSuccess],
+    [filters.documento, filters.nombre, onSearchStart, onSearchEnd, onSearchSuccess, fetchStudents],
   );
 
   // Fetch initial data on mount
@@ -44,8 +44,7 @@ export const SearchStudentForm: React.FC<SearchStudentFormProps> = ({
     return () => {
       clearTimeout(timer);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps, react-x/exhaustive-deps
-  }, []);
+  }, [executeSearch]);
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();

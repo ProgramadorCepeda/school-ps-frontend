@@ -1,6 +1,9 @@
-import type { ModifyEnrollmentResponse } from '../types';
-
-const API_BASE = '/api/v1/enrollment';
+import { fetchApi } from '@/shared/api/apiClient';
+import type {
+  ModifyEnrollmentResponse,
+  ComplementaryConcept,
+  CreateComplementaryPayload,
+} from '../types';
 
 export const modifyEnrollment = async (
   matriculaId: number,
@@ -14,14 +17,49 @@ export const modifyEnrollment = async (
     }[];
   },
 ): Promise<ModifyEnrollmentResponse> => {
-  const response = await fetch(`${API_BASE}/students/${matriculaId.toString()}/matricula`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+  return fetchApi<ModifyEnrollmentResponse>(
+    `/enrollment/students/${matriculaId.toString()}/matricula`,
+    {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    },
+  );
+};
+
+export const deleteComplementaryDetail = async (
+  detalleId: number,
+): Promise<{ mensaje: string; detalle_id: number; matricula_id: number }> => {
+  return fetchApi<{ mensaje: string; detalle_id: number; matricula_id: number }>(
+    `/enrollment/details/${detalleId.toString()}`,
+    {
+      method: 'DELETE',
+    },
+  );
+};
+
+export const getComplementaryConcepts = async (year?: number): Promise<ComplementaryConcept[]> => {
+  const query = year !== undefined ? `?year=${year.toString()}` : '';
+  return fetchApi<ComplementaryConcept[]>(`/enrollment/complementary${query}`);
+};
+
+export const createComplementaryConcept = async (
+  payload: CreateComplementaryPayload,
+): Promise<{ mensaje: string; complementario_id: number }> => {
+  return fetchApi<{ mensaje: string; complementario_id: number }>(`/enrollment/complementary`, {
+    method: 'POST',
     body: JSON.stringify(payload),
   });
-  if (!response.ok) {
-    const errData = (await response.json().catch(() => ({}))) as { detail?: string };
-    throw new Error(errData.detail ?? 'Error al modificar matrícula');
-  }
-  return response.json() as Promise<ModifyEnrollmentResponse>;
+};
+
+export const assignComplementaryConcept = async (
+  matriculaId: number,
+  payload: { complementario_id: number; descuento: number },
+): Promise<{ mensaje: string; detalle_id: number }> => {
+  return fetchApi<{ mensaje: string; detalle_id: number }>(
+    `/enrollment/students/${matriculaId.toString()}/complementary/assign`,
+    {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    },
+  );
 };

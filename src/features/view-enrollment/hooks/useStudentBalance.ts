@@ -13,8 +13,8 @@ export const useStudentBalance = () => {
     try {
       const data = await getStudentBalance(id);
       setBalance(data);
-    } catch (err: any) {
-      setError(err.message || 'Error fetching balance');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error fetching balance');
       console.error('Error fetching balance:', err);
     } finally {
       setLoading(false);

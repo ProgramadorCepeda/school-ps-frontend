@@ -1,19 +1,16 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { DollarSign, Check } from 'lucide-react';
 import { usePayEnrollment } from '../hooks/usePayEnrollment';
 import type { StudentBalance } from '@/entities/student/model/types';
-import { Button } from '../../../shared/ui/atoms/Button';
-import { Input } from '../../../shared/ui/atoms/Input';
+import { Button } from '@/shared/ui/atoms/Button';
+import { Input } from '@/shared/ui/atoms/Input';
 
 interface PayEnrollmentFormProps {
   balance: StudentBalance;
   onPaymentSuccess: () => Promise<void>;
 }
 
-export const PayEnrollmentForm: React.FC<PayEnrollmentFormProps> = ({
-  balance,
-  onPaymentSuccess,
-}) => {
+export const PayEnrollmentForm = ({ balance, onPaymentSuccess }: PayEnrollmentFormProps) => {
   const [receiptNumber, setReceiptNumber] = useState('');
   const [paymentAmounts, setPaymentAmounts] = useState<Record<string, string>>(() => {
     const initialAmounts: Record<string, string> = {};
@@ -38,7 +35,6 @@ export const PayEnrollmentForm: React.FC<PayEnrollmentFormProps> = ({
     if (!receiptNumber) return;
 
     try {
-
       const asignaciones = [];
       for (const key in paymentAmounts) {
         const monto = Number(paymentAmounts[key]);
