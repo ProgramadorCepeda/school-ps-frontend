@@ -7,20 +7,23 @@ export const useSearchStudents = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchStudents = useCallback(async (params: { documento?: string; nombre?: string; year?: number }) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await searchStudents(params);
-      setData(response);
-      return response;
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error al buscar estudiantes');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const fetchStudents = useCallback(
+    async (params: { documento?: string; nombre?: string; year?: number }) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await searchStudents(params);
+        setData(response);
+        return response;
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Error al buscar estudiantes');
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
 
   return { data, loading, error, fetchStudents };
 };
