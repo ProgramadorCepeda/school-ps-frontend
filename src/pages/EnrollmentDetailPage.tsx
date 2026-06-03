@@ -9,7 +9,7 @@ import { PayEnrollmentForm } from '../features/pay-enrollment/ui/PayEnrollmentFo
 import { ModifyEnrollmentModal } from '../features/modify-enrollment/ui/ModifyEnrollmentModal';
 
 export const EnrollmentDetail: React.FC = () => {
-  const { id } = useParams({ from: '/_layout/dashboard/student/$id/enrollment' });
+  const { id } = useParams({ from: '/dashboard/enrollment/student/$id/' });
   const [balance, setBalance] = useState<StudentBalance | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +23,6 @@ export const EnrollmentDetail: React.FC = () => {
   } | null>(null);
 
   const fetchBalance = useCallback(async () => {
-    if (!id) return;
     try {
       setLoading(true);
       const data = await enrollmentApi.getStudentBalance(Number(id));
