@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import {
   CreditCard,
@@ -18,7 +17,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 
-export const DashboardPage: React.FC = () => {
+export const DashboardPage = () => {
   const navigate = useNavigate();
 
   const modules = [

@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, type SubmitEvent } from 'react';
 import { Search } from 'lucide-react';
-import { enrollmentApi } from '../../../entities/student/api/enrollment';
-import type { StudentSearchItem } from '../../../entities/student/api/enrollment';
-import { Button } from '../../../shared/ui/atoms/Button';
-import { Input } from '../../../shared/ui/atoms/Input';
+import { enrollmentApi } from '@/entities/student/api/enrollment';
+import type { StudentSearchItem } from '@/entities/student/api/enrollment';
+import { Button } from '@/shared/ui/atoms/Button';
+import { Input } from '@/shared/ui/atoms/Input';
 
 interface SearchStudentFormProps {
   onSearchSuccess: (students: StudentSearchItem[]) => void;
@@ -11,11 +11,11 @@ interface SearchStudentFormProps {
   onSearchEnd: () => void;
 }
 
-export const SearchStudentForm: React.FC<SearchStudentFormProps> = ({
+export const SearchStudentForm = ({
   onSearchSuccess,
   onSearchStart,
   onSearchEnd,
-}) => {
+}: SearchStudentFormProps) => {
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({ documento: '', nombre: '', date: '' });
 
@@ -46,10 +46,9 @@ export const SearchStudentForm: React.FC<SearchStudentFormProps> = ({
     return () => {
       clearTimeout(timer);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps, react-x/exhaustive-deps
   }, []);
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
+  const handleSubmit = (e: SubmitEvent) => {
     e.preventDefault();
     void executeSearch(false);
   };

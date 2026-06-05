@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { AlertTriangle } from 'lucide-react';
-import { enrollmentApi } from '../../../entities/student/api/enrollment';
-import type { StudentBalance } from '../../../entities/student/api/enrollment';
-import { Button } from '../../../shared/ui/atoms/Button';
-import { Input } from '../../../shared/ui/atoms/Input';
-import { Modal } from '../../../shared/ui/molecules/Modal';
+import { enrollmentApi } from '@/entities/student/api/enrollment';
+import type { StudentBalance } from '@/entities/student/api/enrollment';
+import { Button } from '@/shared/ui/atoms/Button';
+import { Input } from '@/shared/ui/atoms/Input';
+import { Modal } from '@/shared/ui/molecules/Modal';
 
 interface ModifyEnrollmentModalProps {
   isOpen: boolean;
@@ -14,18 +14,18 @@ interface ModifyEnrollmentModalProps {
   onEditSuccess: () => Promise<void>;
 }
 
-export const ModifyEnrollmentModal: React.FC<ModifyEnrollmentModalProps> = ({
+export const ModifyEnrollmentModal = ({
   isOpen,
   onClose,
   balance,
   concept,
   onEditSuccess,
-}) => {
+}: ModifyEnrollmentModalProps) => {
   const [newVal, setNewVal] = useState('');
   const [editReason, setEditReason] = useState('');
   const [editObs, setEditObs] = useState('');
 
-  const handleEditSubmit = async (e: React.SyntheticEvent) => {
+  const handleEditSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     if (!concept || !newVal) return;
 

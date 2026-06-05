@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { authApi } from '../api/authApi';
-import { Button } from '../../../shared/ui/atoms/Button';
-import { Input } from '../../../shared/ui/atoms/Input';
+import { Button } from '@/shared/ui/atoms/Button';
+import { Input } from '@/shared/ui/atoms/Input';
 import { LogIn } from 'lucide-react';
 
 interface LoginFormProps {
   onSuccess: (rol: string) => void;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
+export const LoginForm = ({ onSuccess }: LoginFormProps) => {
   const [username, setUsername] = useState('');
   const [contrasenia, setContrasenia] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.SyntheticEvent) => {
+  const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     if (!username.trim() || !contrasenia.trim()) {
       setError('Por favor complete todos los campos.');

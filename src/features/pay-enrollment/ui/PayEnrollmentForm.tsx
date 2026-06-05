@@ -1,19 +1,17 @@
-import React, { useState } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { DollarSign, Check } from 'lucide-react';
-import { enrollmentApi } from '../../../entities/student/api/enrollment';
-import type { StudentBalance } from '../../../entities/student/api/enrollment';
-import { Button } from '../../../shared/ui/atoms/Button';
-import { Input } from '../../../shared/ui/atoms/Input';
+import { enrollmentApi } from '@/entities/student/api/enrollment';
+import type { StudentBalance } from '@/entities/student/api/enrollment';
+import { Button } from '@/shared/ui/atoms/Button';
+import { Input } from '@/shared/ui/atoms/Input';
+import type { Asign } from '../types';
 
 interface PayEnrollmentFormProps {
   balance: StudentBalance;
   onPaymentSuccess: () => Promise<void>;
 }
 
-export const PayEnrollmentForm: React.FC<PayEnrollmentFormProps> = ({
-  balance,
-  onPaymentSuccess,
-}) => {
+export const PayEnrollmentForm = ({ balance, onPaymentSuccess }: PayEnrollmentFormProps) => {
   const [receiptNumber, setReceiptNumber] = useState('');
   const [paymentAmounts, setPaymentAmounts] = useState<Record<string, string>>(() => {
     const initialAmounts: Record<string, string> = {};
@@ -33,14 +31,14 @@ export const PayEnrollmentForm: React.FC<PayEnrollmentFormProps> = ({
     setPaymentAmounts((prev) => ({ ...prev, [key]: val }));
   };
 
-  const handlePayment = async (e: React.SyntheticEvent) => {
+  const handlePayment = async (e: SubmitEvent) => {
     e.preventDefault();
     if (!receiptNumber) return;
 
     try {
       setPaymentLoading(true);
 
-      const asignaciones = [];
+      const asignaciones: Asign[] = [];
       for (const key in paymentAmounts) {
         const monto = Number(paymentAmounts[key]);
         if (monto > 0) {
