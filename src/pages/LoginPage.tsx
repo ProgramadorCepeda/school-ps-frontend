@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { LoginForm } from '../features/auth/ui/LoginForm';
 import { ShieldAlert } from 'lucide-react';
 
-export const LoginPage: React.FC = () => {
+export const LoginPage = () => {
   const navigate = useNavigate();
 
   // Redirect if already logged in
