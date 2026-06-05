@@ -25,7 +25,7 @@ export function Header({ sidebarOpen, onToggleSidebar }: HeaderProps) {
   const handleLogout = () => {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('auth_user');
-    void navigate({ to: '/login' });
+    void navigate({ to: '/' });
   };
 
   return (
@@ -56,7 +56,7 @@ export function Header({ sidebarOpen, onToggleSidebar }: HeaderProps) {
                 className="w-9 h-9 rounded-full bg-slate-100 border flex items-center justify-center text-slate-700"
                 style={{ borderColor: '#d0d0ce' }}
               >
-                <User className="w-[18px] h-[18px]" />
+                <User className="w-4.5 h-4.5" />
               </div>
               <div className="flex flex-col leading-none">
                 <span className="text-sm font-semibold text-slate-800">{currentUser.username}</span>
