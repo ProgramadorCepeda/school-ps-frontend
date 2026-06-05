@@ -76,7 +76,7 @@ export interface ModifyEnrollmentResponse {
   observaciones_registradas?: string | null;
 }
 
-const API_BASE = '/api/v1/enrollment';
+import { fetchApi } from '@/shared/api/apiClient';
 
 export const enrollmentApi = {
   searchStudents: async (params: {
@@ -89,20 +89,16 @@ export const enrollmentApi = {
     if (params.nombre) query.append('nombre', params.nombre);
     if (params.year) query.append('year', params.year.toString());
 
-    const response = await fetch(`${API_BASE}/students?${query.toString()}`);
-    if (!response.ok) throw new Error('Error al buscar estudiantes');
-    return response.json() as Promise<StudentSearchListResponse>;
+    return fetchApi<StudentSearchListResponse>(`/enrollment/students?${query.toString()}`);
   },
 
   getStudentBalance: async (
     studentId: number,
     year: number = new Date().getFullYear(),
   ): Promise<StudentBalance> => {
-    const response = await fetch(
-      `${API_BASE}/students/${studentId.toString()}/balance?year=${year.toString()}`,
+    return fetchApi<StudentBalance>(
+      `/enrollment/students/${studentId.toString()}/balance?year=${year.toString()}`,
     );
-    if (!response.ok) throw new Error('Error al obtener balance');
-    return response.json() as Promise<StudentBalance>;
   },
 
   registerDirectedPayment: async (payload: {
@@ -116,13 +112,10 @@ export const enrollmentApi = {
     codigo_talonario: string;
     observacion?: string;
   }): Promise<PaymentResultResponse> => {
-    const response = await fetch(`${API_BASE}/payments/directed`, {
+    return fetchApi<PaymentResultResponse>('/enrollment/payments/directed', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    if (!response.ok) throw new Error('Error al registrar el pago');
-    return response.json() as Promise<PaymentResultResponse>;
   },
 
   modifyEnrollment: async (
@@ -137,15 +130,12 @@ export const enrollmentApi = {
       }[];
     },
   ): Promise<ModifyEnrollmentResponse> => {
-    const response = await fetch(`${API_BASE}/students/${matriculaId.toString()}/matricula`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (!response.ok) {
-      const errData = (await response.json().catch(() => ({}))) as { detail?: string };
-      throw new Error(errData.detail ?? 'Error al modificar matrícula');
-    }
-    return response.json() as Promise<ModifyEnrollmentResponse>;
+    return fetchApi<ModifyEnrollmentResponse>(
+      `/enrollment/students/${matriculaId.toString()}/matricula`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      },
+    );
   },
 };
