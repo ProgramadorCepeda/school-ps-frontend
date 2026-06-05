@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { LoginForm } from '../../features/auth/ui/LoginForm';
+import { LoginForm } from '@/features/auth/ui/LoginForm';
 import { ShieldAlert } from 'lucide-react';
 
 export const LoginPage = () => {
