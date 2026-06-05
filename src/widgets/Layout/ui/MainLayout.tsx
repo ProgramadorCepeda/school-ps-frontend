@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate, useRouterState, Link, Outlet } from '@tanstack/react-router';
+import { useState, type MouseEvent } from 'react';
+import { useNavigate, useRouterState, Link } from '@tanstack/react-router';
 import {
   LayoutDashboard,
   Shield,
@@ -18,14 +18,14 @@ import {
   User,
   X,
 } from 'lucide-react';
-import type { LoginUser } from '../../../features/auth/api/authApi';
-import { AppLayout } from '../../../shared/ui/templates/AppLayout';
+import type { LoginUser } from '@/features/auth/api/authApi';
+import { AppLayout } from '@/shared/ui/templates/AppLayout';
 
 interface MainLayoutProps {
   children?: React.ReactNode;
 }
 
-export const MainLayout: React.FC<MainLayoutProps> = () => {
+export const MainLayout = ({ children }: MainLayoutProps) => {
   const navigate = useNavigate();
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
@@ -74,7 +74,7 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
     return false;
   };
 
-  const handleItemClick = (e: React.MouseEvent, itemPath: string, label: string) => {
+  const handleItemClick = (e: MouseEvent, itemPath: string, label: string) => {
     if (itemPath === '/dashboard' || itemPath === '/dashboard/enrollment') {
       return;
     }
@@ -197,7 +197,7 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
 
   return (
     <AppLayout sidebar={sidebar} header={header}>
-      <Outlet />
+      {children}
     </AppLayout>
   );
 };
