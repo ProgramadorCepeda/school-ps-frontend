@@ -40,13 +40,30 @@ export const SearchStudentForm = ({
 
   // Fetch initial data on mount
   useEffect(() => {
+    let cancelled = false;
     const timer = setTimeout(() => {
-      void executeSearch(true);
+      setLoading(true);
+      onSearchStart();
+      enrollmentApi
+        .searchStudents({})
+        .then((data) => {
+          if (!cancelled) onSearchSuccess(data.estudiantes);
+        })
+        .catch((error: unknown) => {
+          console.error('Error fetching students:', error);
+        })
+        .finally(() => {
+          if (!cancelled) {
+            setLoading(false);
+            onSearchEnd();
+          }
+        });
     }, 0);
     return () => {
+      cancelled = true;
       clearTimeout(timer);
     };
-  }, []);
+  }, [onSearchStart, onSearchEnd, onSearchSuccess]);
 
   const handleSubmit = (e: SubmitEvent) => {
     e.preventDefault();
