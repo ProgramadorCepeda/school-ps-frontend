@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import type { Inventory } from '@/entities/inventory/model/types';
 import { createSportLoan } from '../api/create-sport-loan';
-import type { SportLoanFormFields, SportLoanFormErrors } from '../types';
+import { searchStudents } from '../api/search-students';
+import type { SportLoanFormFields, SportLoanFormErrors, StudentResult } from '../types';
 
 const toApiDatetime = (datetimeLocal: string): string => {
   const withSeconds = datetimeLocal.length === 16 ? `${datetimeLocal}:00` : datetimeLocal;
@@ -29,6 +30,48 @@ export const useNewSportLoan = (inventory: Inventory[], onSuccess: () => void) =
 
   const availableInventory = inventory.filter((i) => i.estado_objeto === 'disponible');
   const selectedItem = availableInventory.find((i) => i.id === Number(fields.inventario_id));
+
+  const [studentQuery, setStudentQuery] = useState('');
+  const [studentResults, setStudentResults] = useState<StudentResult[]>([]);
+  const [selectedStudent, setSelectedStudent] = useState<StudentResult | null>(null);
+  const [searchingStudents, setSearchingStudents] = useState(false);
+
+  const handleStudentSearch = async (query: string) => {
+    setStudentQuery(query);
+    setSelectedStudent(null);
+    handleChange('estudiante_id', '');
+
+    if (!query.trim()) {
+      setStudentResults([]);
+      return;
+    }
+
+    setSearchingStudents(true);
+
+    const params = new URLSearchParams();
+
+    if (Number(query)) {
+      params.append('documento', encodeURIComponent(query));
+    } else {
+      params.append('nombre', encodeURIComponent(query));
+    }
+
+    try {
+      const results = await searchStudents(params.toString());
+      setStudentResults(results);
+    } catch {
+      setStudentResults([]);
+    } finally {
+      setSearchingStudents(false);
+    }
+  };
+
+  const handleSelectStudent = (student: StudentResult) => {
+    setSelectedStudent(student);
+    setStudentQuery(student.nombre);
+    setStudentResults([]);
+    handleChange('estudiante_id', String(student.id));
+  };
 
   const handleChange = (field: keyof SportLoanFormFields, value: string) => {
     setFields((prev) => ({ ...prev, [field]: value }));
@@ -88,6 +131,9 @@ export const useNewSportLoan = (inventory: Inventory[], onSuccess: () => void) =
   const reset = () => {
     setFields(INITIAL_FIELDS());
     setErrors({});
+    setStudentQuery('');
+    setStudentResults([]);
+    setSelectedStudent(null);
   };
 
   return {
@@ -96,6 +142,12 @@ export const useNewSportLoan = (inventory: Inventory[], onSuccess: () => void) =
     loading,
     availableInventory,
     selectedItem,
+    studentQuery,
+    studentResults,
+    selectedStudent,
+    searchingStudents,
+    handleStudentSearch,
+    handleSelectStudent,
     handleChange,
     handleSubmit,
     reset,
