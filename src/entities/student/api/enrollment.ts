@@ -1,3 +1,5 @@
+import { fetchApi } from '@/shared/api/apiClient';
+
 export interface StudentSearchItem {
   estudiante_id: number;
   documento: string;
@@ -140,39 +142,44 @@ export interface CreateComplementaryPayload {
   uso_matricula: boolean;
 }
 
-const API_BASE = '/api/v1/enrollment';
-
 export const enrollmentApi = {
-  searchStudents: async (params: { documento?: string; nombre?: string; year?: number }): Promise<StudentSearchListResponse> => {
+  searchStudents: async (params: {
+    documento?: string;
+    nombre?: string;
+    year?: number;
+  }): Promise<StudentSearchListResponse> => {
     const query = new URLSearchParams();
     if (params.documento) query.append('documento', params.documento);
     if (params.nombre) query.append('nombre', params.nombre);
     if (params.year) query.append('year', params.year.toString());
 
-    const response = await fetch(`${API_BASE}/students?${query.toString()}`);
-    if (!response.ok) throw new Error('Error al buscar estudiantes');
-    return response.json() as Promise<StudentSearchListResponse>;
+    return fetchApi<StudentSearchListResponse>(`/enrollment/students?${query.toString()}`);
   },
 
-  getStudentBalance: async (studentId: number, year: number = new Date().getFullYear()): Promise<StudentBalance> => {
-    const response = await fetch(`${API_BASE}/students/${studentId.toString()}/balance?year=${year.toString()}`);
-    if (!response.ok) throw new Error('Error al obtener balance');
-    return response.json() as Promise<StudentBalance>;
+  getStudentBalance: async (
+    studentId: number,
+    year: number = new Date().getFullYear(),
+  ): Promise<StudentBalance> => {
+    return fetchApi<StudentBalance>(
+      `/enrollment/students/${studentId.toString()}/balance?year=${year.toString()}`,
+    );
   },
 
   registerDirectedPayment: async (payload: {
     matricula_id: number;
-    asignaciones: { concepto: string; complementario_id?: number; detalle_id?: number; monto: number }[];
+    asignaciones: {
+      concepto: string;
+      complementario_id?: number;
+      detalle_id?: number;
+      monto: number;
+    }[];
     codigo_talonario: string;
     observacion?: string;
   }): Promise<PaymentResultResponse> => {
-    const response = await fetch(`${API_BASE}/payments/directed`, {
+    return fetchApi<PaymentResultResponse>('/enrollment/payments/directed', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    if (!response.ok) throw new Error('Error al registrar el pago');
-    return response.json() as Promise<PaymentResultResponse>;
   },
 
   modifyEnrollment: async (
@@ -185,124 +192,89 @@ export const enrollmentApi = {
         detalle_id: number;
         nuevo_valor_completo?: number;
       }[];
-    }
+    },
   ): Promise<ModifyEnrollmentResponse> => {
-    const response = await fetch(`${API_BASE}/students/${matriculaId.toString()}/matricula`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (!response.ok) {
-      const errData = (await response.json().catch(() => ({}))) as { detail?: string };
-      throw new Error(errData.detail ?? 'Error al modificar matrícula');
-    }
-    return response.json() as Promise<ModifyEnrollmentResponse>;
+    return fetchApi<ModifyEnrollmentResponse>(
+      `/enrollment/students/${matriculaId.toString()}/matricula`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      },
+    );
   },
 
-  registerMassiveCsv: async (periodoId: number, anio: number, file: File): Promise<MassEnrollmentResponse> => {
+  registerMassiveCsv: async (
+    periodoId: number,
+    anio: number,
+    file: File,
+  ): Promise<MassEnrollmentResponse> => {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await fetch(`${API_BASE}/register/massive/csv?periodo_id=${periodoId.toString()}&anio=${anio.toString()}`, {
-      method: 'POST',
-      body: formData,
-    });
-    if (!response.ok) {
-      const errData = (await response.json().catch(() => ({}))) as { detail?: string };
-      throw new Error(errData.detail ?? 'Error al registrar matrículas masivamente');
-    }
-    return response.json() as Promise<MassEnrollmentResponse>;
+    return fetchApi<MassEnrollmentResponse>(
+      `/enrollment/register/massive/csv?periodo_id=${periodoId.toString()}&anio=${anio.toString()}`,
+      {
+        method: 'POST',
+        body: formData,
+      },
+    );
   },
 
-  manualEnrollment: async (payload: ManualEnrollmentPayload): Promise<{ mensaje: string; matricula_id: number }> => {
-    const response = await fetch(`${API_BASE}/students/manual`, {
+  manualEnrollment: async (
+    payload: ManualEnrollmentPayload,
+  ): Promise<{ mensaje: string; matricula_id: number }> => {
+    return fetchApi<{ mensaje: string; matricula_id: number }>('/enrollment/students/manual', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    if (!response.ok) {
-      const errData = (await response.json().catch(() => ({}))) as { detail?: string };
-      throw new Error(errData.detail ?? 'Error al matricular estudiante manualmente');
-    }
-    return response.json() as Promise<{ mensaje: string; matricula_id: number }>;
   },
 
   getPaymentHistory: async (studentId: number, year?: number): Promise<PaymentHistoryItem[]> => {
     const query = year ? `?year=${year.toString()}` : '';
-    const response = await fetch(`${API_BASE}/students/${studentId.toString()}/payments${query}`);
-    if (!response.ok) {
-      throw new Error('Error al obtener el historial de pagos');
-    }
-    return response.json() as Promise<PaymentHistoryItem[]>;
+    return fetchApi<PaymentHistoryItem[]>(
+      `/enrollment/students/${studentId.toString()}/payments${query}`,
+    );
   },
 
   getPaymentReceipt: async (pagoId: number): Promise<PaymentReceiptResponse> => {
-    const response = await fetch(`${API_BASE}/payments/${pagoId.toString()}/receipt`);
-    if (!response.ok) {
-      throw new Error('Error al obtener el comprobante de pago');
-    }
-    return response.json() as Promise<PaymentReceiptResponse>;
+    return fetchApi<PaymentReceiptResponse>(`/enrollment/payments/${pagoId.toString()}/receipt`);
   },
 
-  deleteComplementaryDetail: async (detalleId: number): Promise<{ mensaje: string; detalle_id: number; matricula_id: number }> => {
-    const response = await fetch(`${API_BASE}/details/${detalleId.toString()}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) {
-      const errData = (await response.json().catch(() => ({}))) as { detail?: string };
-      throw new Error(errData.detail ?? 'Error al desvincular el concepto complementario');
-    }
-    return response.json() as Promise<{ mensaje: string; detalle_id: number; matricula_id: number }>;
+  deleteComplementaryDetail: async (
+    detalleId: number,
+  ): Promise<{ mensaje: string; detalle_id: number; matricula_id: number }> => {
+    return fetchApi<{ mensaje: string; detalle_id: number; matricula_id: number }>(
+      `/enrollment/details/${detalleId.toString()}`,
+      {
+        method: 'DELETE',
+      },
+    );
   },
 
   getComplementaryConcepts: async (year?: number): Promise<ComplementaryConcept[]> => {
     const query = year !== undefined ? `?year=${year.toString()}` : '';
-    const response = await fetch(`${API_BASE}/complementary${query}`);
-    if (!response.ok) {
-      throw new Error('Error al obtener los conceptos complementarios');
-    }
-    return response.json() as Promise<ComplementaryConcept[]>;
+    return fetchApi<ComplementaryConcept[]>(`/enrollment/complementary${query}`);
   },
 
-  createComplementaryConcept: async (payload: CreateComplementaryPayload): Promise<{ mensaje: string; complementario_id: number }> => {
-    const response = await fetch(`${API_BASE}/complementary`, {
+  createComplementaryConcept: async (
+    payload: CreateComplementaryPayload,
+  ): Promise<{ mensaje: string; complementario_id: number }> => {
+    return fetchApi<{ mensaje: string; complementario_id: number }>('/enrollment/complementary', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    if (!response.ok) {
-      const errData = (await response.json().catch(() => ({}))) as { detail?: string };
-      throw new Error(errData.detail ?? 'Error al crear el concepto complementario');
-    }
-    return response.json() as Promise<{ mensaje: string; complementario_id: number }>;
   },
 
-  assignComplementaryConcept: async (matriculaId: number, payload: { complementario_id: number; descuento: number }): Promise<{ mensaje: string; detalle_id: number }> => {
-    const response = await fetch(`${API_BASE}/${matriculaId.toString()}/complementary/assign`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (!response.ok) {
-      const errData = (await response.json().catch(() => ({}))) as { detail?: unknown };
-      let errMsg = 'Error al asignar el concepto complementario';
-      if (errData.detail) {
-        if (typeof errData.detail === 'string') {
-          errMsg = errData.detail;
-        } else if (Array.isArray(errData.detail)) {
-          const messages = errData.detail.map((e: unknown) => {
-            if (e && typeof e === 'object' && 'msg' in e) {
-              return String(e.msg);
-            }
-            return JSON.stringify(e);
-          });
-          errMsg = messages.join(', ');
-        } else {
-          errMsg = JSON.stringify(errData.detail);
-        }
-      }
-      throw new Error(errMsg);
-    }
-    return response.json() as Promise<{ mensaje: string; detalle_id: number }>;
-  }
+  assignComplementaryConcept: async (
+    matriculaId: number,
+    payload: { complementario_id: number; descuento: number },
+  ): Promise<{ mensaje: string; detalle_id: number }> => {
+    return fetchApi<{ mensaje: string; detalle_id: number }>(
+      `/enrollment/${matriculaId.toString()}/complementary/assign`,
+      {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      },
+    );
+  },
 };

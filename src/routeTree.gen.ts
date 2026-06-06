@@ -9,23 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './app/router/__root'
-import { Route as LoginRouteImport } from './app/router/login'
-import { Route as LayoutRouteImport } from './app/router/_layout'
+import { Route as DashboardRouteRouteImport } from './app/router/dashboard/route'
 import { Route as IndexRouteImport } from './app/router/index'
+import { Route as DashboardIndexRouteImport } from './app/router/dashboard/index'
+import { Route as DashboardTuitionIndexRouteImport } from './app/router/dashboard/tuition/index'
 import { Route as DashboardTestsIndexRouteImport } from './app/router/dashboard/tests/index'
 import { Route as DashboardRectoriaIndexRouteImport } from './app/router/dashboard/rectoria/index'
+import { Route as DashboardEscuelasFormacionIndexRouteImport } from './app/router/dashboard/escuelas-formacion/index'
+import { Route as DashboardEnrollmentIndexRouteImport } from './app/router/dashboard/enrollment/index'
+import { Route as DashboardDeportesIndexRouteImport } from './app/router/dashboard/deportes/index'
 import { Route as DashboardBandIndexRouteImport } from './app/router/dashboard/band/index'
-import { Route as LayoutDashboardIndexRouteImport } from './app/router/_layout.dashboard.index'
-import { Route as LayoutDashboardEnrollmentRouteImport } from './app/router/_layout.dashboard.enrollment'
-import { Route as LayoutDashboardStudentIdEnrollmentRouteImport } from './app/router/_layout.dashboard.student.$id.enrollment'
+import { Route as DashboardEnrollmentStudentIdIndexRouteImport } from './app/router/dashboard/enrollment/student/$id/index'
 
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LayoutRoute = LayoutRouteImport.update({
-  id: '/_layout',
+const DashboardRouteRoute = DashboardRouteRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -33,128 +31,147 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardTuitionIndexRoute = DashboardTuitionIndexRouteImport.update({
+  id: '/tuition/',
+  path: '/tuition/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const DashboardTestsIndexRoute = DashboardTestsIndexRouteImport.update({
-  id: '/dashboard/tests/',
-  path: '/dashboard/tests/',
-  getParentRoute: () => rootRouteImport,
+  id: '/tests/',
+  path: '/tests/',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardRectoriaIndexRoute = DashboardRectoriaIndexRouteImport.update({
-  id: '/dashboard/rectoria/',
-  path: '/dashboard/rectoria/',
-  getParentRoute: () => rootRouteImport,
+  id: '/rectoria/',
+  path: '/rectoria/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardEscuelasFormacionIndexRoute =
+  DashboardEscuelasFormacionIndexRouteImport.update({
+    id: '/escuelas-formacion/',
+    path: '/escuelas-formacion/',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
+const DashboardEnrollmentIndexRoute =
+  DashboardEnrollmentIndexRouteImport.update({
+    id: '/enrollment/',
+    path: '/enrollment/',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
+const DashboardDeportesIndexRoute = DashboardDeportesIndexRouteImport.update({
+  id: '/deportes/',
+  path: '/deportes/',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardBandIndexRoute = DashboardBandIndexRouteImport.update({
-  id: '/dashboard/band/',
-  path: '/dashboard/band/',
-  getParentRoute: () => rootRouteImport,
+  id: '/band/',
+  path: '/band/',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
-const LayoutDashboardIndexRoute = LayoutDashboardIndexRouteImport.update({
-  id: '/dashboard/',
-  path: '/dashboard/',
-  getParentRoute: () => LayoutRoute,
-} as any)
-const LayoutDashboardEnrollmentRoute =
-  LayoutDashboardEnrollmentRouteImport.update({
-    id: '/dashboard/enrollment',
-    path: '/dashboard/enrollment',
-    getParentRoute: () => LayoutRoute,
-  } as any)
-const LayoutDashboardStudentIdEnrollmentRoute =
-  LayoutDashboardStudentIdEnrollmentRouteImport.update({
-    id: '/dashboard/student/$id/enrollment',
-    path: '/dashboard/student/$id/enrollment',
-    getParentRoute: () => LayoutRoute,
+const DashboardEnrollmentStudentIdIndexRoute =
+  DashboardEnrollmentStudentIdIndexRouteImport.update({
+    id: '/enrollment/student/$id/',
+    path: '/enrollment/student/$id/',
+    getParentRoute: () => DashboardRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/dashboard/enrollment': typeof LayoutDashboardEnrollmentRoute
-  '/dashboard/': typeof LayoutDashboardIndexRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/band/': typeof DashboardBandIndexRoute
+  '/dashboard/deportes/': typeof DashboardDeportesIndexRoute
+  '/dashboard/enrollment/': typeof DashboardEnrollmentIndexRoute
+  '/dashboard/escuelas-formacion/': typeof DashboardEscuelasFormacionIndexRoute
   '/dashboard/rectoria/': typeof DashboardRectoriaIndexRoute
   '/dashboard/tests/': typeof DashboardTestsIndexRoute
-  '/dashboard/student/$id/enrollment': typeof LayoutDashboardStudentIdEnrollmentRoute
+  '/dashboard/tuition/': typeof DashboardTuitionIndexRoute
+  '/dashboard/enrollment/student/$id/': typeof DashboardEnrollmentStudentIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/dashboard/enrollment': typeof LayoutDashboardEnrollmentRoute
-  '/dashboard': typeof LayoutDashboardIndexRoute
+  '/dashboard': typeof DashboardIndexRoute
   '/dashboard/band': typeof DashboardBandIndexRoute
+  '/dashboard/deportes': typeof DashboardDeportesIndexRoute
+  '/dashboard/enrollment': typeof DashboardEnrollmentIndexRoute
+  '/dashboard/escuelas-formacion': typeof DashboardEscuelasFormacionIndexRoute
   '/dashboard/rectoria': typeof DashboardRectoriaIndexRoute
   '/dashboard/tests': typeof DashboardTestsIndexRoute
-  '/dashboard/student/$id/enrollment': typeof LayoutDashboardStudentIdEnrollmentRoute
+  '/dashboard/tuition': typeof DashboardTuitionIndexRoute
+  '/dashboard/enrollment/student/$id': typeof DashboardEnrollmentStudentIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_layout': typeof LayoutRouteWithChildren
-  '/login': typeof LoginRoute
-  '/_layout/dashboard/enrollment': typeof LayoutDashboardEnrollmentRoute
-  '/_layout/dashboard/': typeof LayoutDashboardIndexRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/band/': typeof DashboardBandIndexRoute
+  '/dashboard/deportes/': typeof DashboardDeportesIndexRoute
+  '/dashboard/enrollment/': typeof DashboardEnrollmentIndexRoute
+  '/dashboard/escuelas-formacion/': typeof DashboardEscuelasFormacionIndexRoute
   '/dashboard/rectoria/': typeof DashboardRectoriaIndexRoute
   '/dashboard/tests/': typeof DashboardTestsIndexRoute
-  '/_layout/dashboard/student/$id/enrollment': typeof LayoutDashboardStudentIdEnrollmentRoute
+  '/dashboard/tuition/': typeof DashboardTuitionIndexRoute
+  '/dashboard/enrollment/student/$id/': typeof DashboardEnrollmentStudentIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/login'
-    | '/dashboard/enrollment'
+    | '/dashboard'
     | '/dashboard/'
     | '/dashboard/band/'
+    | '/dashboard/deportes/'
+    | '/dashboard/enrollment/'
+    | '/dashboard/escuelas-formacion/'
     | '/dashboard/rectoria/'
     | '/dashboard/tests/'
-    | '/dashboard/student/$id/enrollment'
+    | '/dashboard/tuition/'
+    | '/dashboard/enrollment/student/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/login'
-    | '/dashboard/enrollment'
     | '/dashboard'
     | '/dashboard/band'
+    | '/dashboard/deportes'
+    | '/dashboard/enrollment'
+    | '/dashboard/escuelas-formacion'
     | '/dashboard/rectoria'
     | '/dashboard/tests'
-    | '/dashboard/student/$id/enrollment'
+    | '/dashboard/tuition'
+    | '/dashboard/enrollment/student/$id'
   id:
     | '__root__'
     | '/'
-    | '/_layout'
-    | '/login'
-    | '/_layout/dashboard/enrollment'
-    | '/_layout/dashboard/'
+    | '/dashboard'
+    | '/dashboard/'
     | '/dashboard/band/'
+    | '/dashboard/deportes/'
+    | '/dashboard/enrollment/'
+    | '/dashboard/escuelas-formacion/'
     | '/dashboard/rectoria/'
     | '/dashboard/tests/'
-    | '/_layout/dashboard/student/$id/enrollment'
+    | '/dashboard/tuition/'
+    | '/dashboard/enrollment/student/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  LayoutRoute: typeof LayoutRouteWithChildren
-  LoginRoute: typeof LoginRoute
-  DashboardBandIndexRoute: typeof DashboardBandIndexRoute
-  DashboardRectoriaIndexRoute: typeof DashboardRectoriaIndexRoute
-  DashboardTestsIndexRoute: typeof DashboardTestsIndexRoute
+  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_layout': {
-      id: '/_layout'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof LayoutRouteImport
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -164,74 +181,104 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/tuition/': {
+      id: '/dashboard/tuition/'
+      path: '/tuition'
+      fullPath: '/dashboard/tuition/'
+      preLoaderRoute: typeof DashboardTuitionIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/dashboard/tests/': {
       id: '/dashboard/tests/'
-      path: '/dashboard/tests'
+      path: '/tests'
       fullPath: '/dashboard/tests/'
       preLoaderRoute: typeof DashboardTestsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/rectoria/': {
       id: '/dashboard/rectoria/'
-      path: '/dashboard/rectoria'
+      path: '/rectoria'
       fullPath: '/dashboard/rectoria/'
       preLoaderRoute: typeof DashboardRectoriaIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/escuelas-formacion/': {
+      id: '/dashboard/escuelas-formacion/'
+      path: '/escuelas-formacion'
+      fullPath: '/dashboard/escuelas-formacion/'
+      preLoaderRoute: typeof DashboardEscuelasFormacionIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/enrollment/': {
+      id: '/dashboard/enrollment/'
+      path: '/enrollment'
+      fullPath: '/dashboard/enrollment/'
+      preLoaderRoute: typeof DashboardEnrollmentIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/deportes/': {
+      id: '/dashboard/deportes/'
+      path: '/deportes'
+      fullPath: '/dashboard/deportes/'
+      preLoaderRoute: typeof DashboardDeportesIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/band/': {
       id: '/dashboard/band/'
-      path: '/dashboard/band'
+      path: '/band'
       fullPath: '/dashboard/band/'
       preLoaderRoute: typeof DashboardBandIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
-    '/_layout/dashboard/': {
-      id: '/_layout/dashboard/'
-      path: '/dashboard'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof LayoutDashboardIndexRouteImport
-      parentRoute: typeof LayoutRoute
-    }
-    '/_layout/dashboard/enrollment': {
-      id: '/_layout/dashboard/enrollment'
-      path: '/dashboard/enrollment'
-      fullPath: '/dashboard/enrollment'
-      preLoaderRoute: typeof LayoutDashboardEnrollmentRouteImport
-      parentRoute: typeof LayoutRoute
-    }
-    '/_layout/dashboard/student/$id/enrollment': {
-      id: '/_layout/dashboard/student/$id/enrollment'
-      path: '/dashboard/student/$id/enrollment'
-      fullPath: '/dashboard/student/$id/enrollment'
-      preLoaderRoute: typeof LayoutDashboardStudentIdEnrollmentRouteImport
-      parentRoute: typeof LayoutRoute
+    '/dashboard/enrollment/student/$id/': {
+      id: '/dashboard/enrollment/student/$id/'
+      path: '/enrollment/student/$id'
+      fullPath: '/dashboard/enrollment/student/$id/'
+      preLoaderRoute: typeof DashboardEnrollmentStudentIdIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
   }
 }
 
-interface LayoutRouteChildren {
-  LayoutDashboardEnrollmentRoute: typeof LayoutDashboardEnrollmentRoute
-  LayoutDashboardIndexRoute: typeof LayoutDashboardIndexRoute
-  LayoutDashboardStudentIdEnrollmentRoute: typeof LayoutDashboardStudentIdEnrollmentRoute
+interface DashboardRouteRouteChildren {
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardBandIndexRoute: typeof DashboardBandIndexRoute
+  DashboardDeportesIndexRoute: typeof DashboardDeportesIndexRoute
+  DashboardEnrollmentIndexRoute: typeof DashboardEnrollmentIndexRoute
+  DashboardEscuelasFormacionIndexRoute: typeof DashboardEscuelasFormacionIndexRoute
+  DashboardRectoriaIndexRoute: typeof DashboardRectoriaIndexRoute
+  DashboardTestsIndexRoute: typeof DashboardTestsIndexRoute
+  DashboardTuitionIndexRoute: typeof DashboardTuitionIndexRoute
+  DashboardEnrollmentStudentIdIndexRoute: typeof DashboardEnrollmentStudentIdIndexRoute
 }
 
-const LayoutRouteChildren: LayoutRouteChildren = {
-  LayoutDashboardEnrollmentRoute: LayoutDashboardEnrollmentRoute,
-  LayoutDashboardIndexRoute: LayoutDashboardIndexRoute,
-  LayoutDashboardStudentIdEnrollmentRoute:
-    LayoutDashboardStudentIdEnrollmentRoute,
+const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardBandIndexRoute: DashboardBandIndexRoute,
+  DashboardDeportesIndexRoute: DashboardDeportesIndexRoute,
+  DashboardEnrollmentIndexRoute: DashboardEnrollmentIndexRoute,
+  DashboardEscuelasFormacionIndexRoute: DashboardEscuelasFormacionIndexRoute,
+  DashboardRectoriaIndexRoute: DashboardRectoriaIndexRoute,
+  DashboardTestsIndexRoute: DashboardTestsIndexRoute,
+  DashboardTuitionIndexRoute: DashboardTuitionIndexRoute,
+  DashboardEnrollmentStudentIdIndexRoute:
+    DashboardEnrollmentStudentIdIndexRoute,
 }
 
-const LayoutRouteWithChildren =
-  LayoutRoute._addFileChildren(LayoutRouteChildren)
+const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
+  DashboardRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  LayoutRoute: LayoutRouteWithChildren,
-  LoginRoute: LoginRoute,
-  DashboardBandIndexRoute: DashboardBandIndexRoute,
-  DashboardRectoriaIndexRoute: DashboardRectoriaIndexRoute,
-  DashboardTestsIndexRoute: DashboardTestsIndexRoute,
+  DashboardRouteRoute: DashboardRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
