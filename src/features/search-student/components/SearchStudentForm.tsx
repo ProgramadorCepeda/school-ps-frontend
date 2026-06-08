@@ -48,7 +48,15 @@ export const SearchStudentForm = ({
         }
       }
     },
-    [filters.documento, filters.nombre, filters.date, onSearchStart, onSearchEnd, onSearchSuccess, fetchStudents],
+    [
+      filters.documento,
+      filters.nombre,
+      filters.date,
+      onSearchStart,
+      onSearchEnd,
+      onSearchSuccess,
+      fetchStudents,
+    ],
   );
 
   useEffect(() => {
