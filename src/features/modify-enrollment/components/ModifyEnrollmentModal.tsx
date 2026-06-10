@@ -4,7 +4,7 @@ import { useModifyEnrollment } from '../hooks/useModifyEnrollment';
 import type { StudentBalance } from '@/entities/student/model/types';
 import { Button } from '@/shared/ui/atoms/Button';
 import { Input } from '@/shared/ui/atoms/Input';
-import { Modal } from '@/shared/ui/molecules/Modal';
+import { Modal } from '@/shared/ui';
 
 interface ModifyEnrollmentModalProps {
   isOpen: boolean;
