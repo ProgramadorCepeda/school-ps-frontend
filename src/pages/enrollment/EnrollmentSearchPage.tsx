@@ -51,7 +51,7 @@ export const EnrollmentSearch = () => {
         <h1>Módulo de Matrícula</h1>
         <p>Gestión de matrículas y pagos</p>
       </div>
-      <div style={{ display: 'flex', gap: '12px' }}>
+      <div className="enrollment-actions">
         <Button
           variant="primary"
           onClick={() => {
@@ -153,6 +153,7 @@ export const EnrollmentSearch = () => {
           </tbody>
         </table>
       </div>
+
 
       {/* Manual enrollment modal */}
       <ManualEnrollmentModal

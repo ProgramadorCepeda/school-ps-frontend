@@ -1,0 +1,540 @@
+/* ================================================
+   WebColegios Scraping — alineado con TuitionManager
+   ================================================ */
+
+.webcolegios-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Header — mismo patrón que .page-title de tuition */
+.webcolegios-view .webcolegios-header h1 {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.025em;
+}
+
+.webcolegios-view .webcolegios-header p {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Info band — mismo patrón que .search-info de tuition */
+.webcolegios-info-band {
+  background-color: var(--info-bg);
+  border: 1px solid var(--info-border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--info-text);
+}
+
+.webcolegios-info-band p {
+  margin: 0;
+}
+
+/* Tabs */
+.webcolegios-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.webcolegios-tabs button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.webcolegios-tabs button.is-active {
+  border-bottom-color: var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+/* Grid del tab scraping */
+.webcolegios-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+  gap: 1.25rem;
+}
+
+/* Cards — mismo patrón que .card de tuition */
+.webcolegios-connection-card,
+.webcolegios-summary-panel,
+.webcolegios-history-panel {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  transition: box-shadow var(--transition-normal);
+}
+
+.webcolegios-connection-card:hover,
+.webcolegios-summary-panel:hover,
+.webcolegios-history-panel:hover {
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.05),
+    0 4px 6px -2px rgba(0, 0, 0, 0.025);
+}
+
+/* Section header */
+.webcolegios-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.webcolegios-section-header h2 {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--brand-primary);
+}
+
+.webcolegios-section-header p {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Form */
+.webcolegios-form {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.webcolegios-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+/* Field — mismo patrón que .input-group de tuition */
+.webcolegios-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: var(--font-size-sm);
+}
+
+.webcolegios-field > span {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+/* Input con ícono */
+.webcolegios-input-shell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-md);
+  background: var(--input-bg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) inset;
+  transition: all var(--transition-fast);
+}
+
+.webcolegios-input-shell:focus-within {
+  border-color: var(--input-border-focus);
+  box-shadow: 0 0 0 3px rgba(123, 29, 29, 0.1);
+}
+
+.webcolegios-input-shell svg {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  flex: 0 0 auto;
+}
+
+.webcolegios-input-shell input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  font-size: var(--font-size-md);
+  color: var(--input-text);
+  background: transparent;
+}
+
+.webcolegios-input-shell input::placeholder {
+  color: var(--input-placeholder);
+}
+
+/* Plain input, select, textarea — mismo patrón que .form-input de tuition */
+.webcolegios-plain-input,
+.webcolegios-select,
+.webcolegios-textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-md);
+  background: var(--input-bg);
+  color: var(--input-text);
+  font: inherit;
+  font-size: var(--font-size-md);
+  outline: none;
+  transition: all var(--transition-fast);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) inset;
+}
+
+.webcolegios-textarea {
+  min-height: 220px;
+  resize: vertical;
+}
+
+.webcolegios-plain-input:focus,
+.webcolegios-select:focus,
+.webcolegios-textarea:focus {
+  border-color: var(--input-border-focus);
+  box-shadow: 0 0 0 3px rgba(123, 29, 29, 0.1);
+}
+
+.webcolegios-plain-input::placeholder,
+.webcolegios-textarea::placeholder {
+  color: var(--input-placeholder);
+}
+
+/* Errores */
+.webcolegios-field small,
+.webcolegios-form-error,
+.webcolegios-inline-error {
+  color: var(--status-red);
+  font-size: var(--font-size-sm);
+}
+
+.webcolegios-form-error,
+.webcolegios-inline-error {
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--status-red-bg);
+  border: 1px solid var(--status-red-border);
+  font-weight: 600;
+}
+
+.webcolegios-inline-error {
+  margin: 1rem 1.25rem 0;
+}
+
+/* Botón principal — mismo patrón que .btn-primary de tuition */
+.webcolegios-run-button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--brand-primary);
+  color: white;
+  font: inherit;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.webcolegios-run-button:hover:not(:disabled) {
+  background: var(--brand-primary-hover);
+}
+
+.webcolegios-run-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Botón limpiar */
+.webcolegios-clear-button {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--status-red-border);
+  border-radius: var(--radius-md);
+  background: var(--status-red-bg);
+  color: var(--status-red);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.webcolegios-clear-button:hover:not(:disabled) {
+  background: #fee2e2;
+}
+
+.webcolegios-clear-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Grid de acciones */
+.webcolegios-run-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.webcolegios-button-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.spinning {
+  animation: spin 0.8s linear infinite;
+}
+
+/* Robot card — misma estructura que .student-info de tuition */
+.webcolegios-robot-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid var(--primary);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: box-shadow var(--transition-normal);
+}
+
+.webcolegios-robot-card.status-finished {
+  border-left-color: var(--status-green);
+}
+
+.webcolegios-robot-card.status-error {
+  border-left-color: var(--status-red);
+}
+
+.webcolegios-robot-card.status-no_connected {
+  border-left-color: var(--status-gray-border);
+}
+
+.webcolegios-robot-card.status-connecting,
+.webcolegios-robot-card.status-running,
+.webcolegios-robot-card.status-syncing {
+  border-left-color: var(--primary);
+}
+
+.webcolegios-robot-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background: #edf4ff;
+  color: var(--primary);
+}
+
+.webcolegios-robot-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.webcolegios-status-eyebrow {
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.webcolegios-robot-card h2 {
+  margin: 4px 0;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.webcolegios-robot-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+.webcolegios-status-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--card-border);
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.webcolegios-status-footer svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Summary — mismo patrón que .summary-cards/.summary-card de tuition */
+.webcolegios-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.webcolegios-summary-item {
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--card-border);
+  background: #f8fafc;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.webcolegios-summary-item:hover {
+  transform: translateY(-2px);
+}
+
+.webcolegios-summary-item span {
+  display: block;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.webcolegios-summary-item strong {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+
+/* Tabla */
+.webcolegios-table-wrap {
+  overflow-x: auto;
+}
+
+.webcolegios-history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.webcolegios-history-table th,
+.webcolegios-history-table td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--card-border);
+  text-align: left;
+  font-size: var(--font-size-sm);
+  vertical-align: middle;
+}
+
+.webcolegios-history-table th {
+  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f8fafc;
+}
+
+.webcolegios-history-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* State pills — mismo patrón que .status-badge de tuition */
+.webcolegios-state-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  border: 1px solid var(--status-gray-border);
+  background: var(--status-gray-bg);
+  color: var(--status-gray);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.webcolegios-state-pill.is-success {
+  border-color: var(--status-green-border);
+  background: var(--status-green-bg);
+  color: var(--status-green);
+}
+
+.webcolegios-state-pill.is-error {
+  border-color: var(--status-red-border);
+  background: var(--status-red-bg);
+  color: var(--status-red);
+}
+
+.webcolegios-state-pill.is-pending {
+  border-color: var(--status-yellow-border);
+  background: var(--status-yellow-bg);
+  color: var(--status-yellow);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .webcolegios-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .webcolegios-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .webcolegios-run-actions,
+  .webcolegios-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .webcolegios-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .webcolegios-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

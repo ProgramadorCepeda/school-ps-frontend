@@ -232,7 +232,6 @@ export const PayEnrollmentForm = ({ balance, onPaymentSuccess }: PayEnrollmentFo
             </div>
           </div>
         )}
-
         <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '16px' }}>
           <Button type="submit" variant="primary" disabled={paymentLoading}>
             <Check size={16} style={{ marginRight: '8px' }} />
