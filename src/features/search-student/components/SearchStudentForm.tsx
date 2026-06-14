@@ -17,8 +17,11 @@ export const SearchStudentForm = ({
   onSearchEnd,
 }: SearchStudentFormProps) => {
   const { loading, fetchStudents } = useSearchStudents();
-  const [filters, setFilters] = useState({ documento: '', nombre: '', date: '' });
+  const [filters, setFilters] = useState({ documento: '', nombre: '', year: '' });
   const mountedRef = useRef(true);
+
+  const currentYear = new Date().getFullYear();
+  const years = [currentYear - 2, currentYear - 1, currentYear, currentYear + 1];
 
   const executeSearch = useCallback(
     async (isInitial = false) => {
@@ -28,9 +31,8 @@ export const SearchStudentForm = ({
         if (!isInitial) {
           if (filters.documento) params.documento = filters.documento;
           if (filters.nombre) params.nombre = filters.nombre;
-          if (filters.date) {
-            const yearStr = filters.date.split('-')[0];
-            const parsedYear = parseInt(yearStr, 10);
+          if (filters.year) {
+            const parsedYear = parseInt(filters.year, 10);
             if (!isNaN(parsedYear)) {
               params.year = parsedYear;
             }
@@ -51,7 +53,7 @@ export const SearchStudentForm = ({
     [
       filters.documento,
       filters.nombre,
-      filters.date,
+      filters.year,
       onSearchStart,
       onSearchEnd,
       onSearchSuccess,
@@ -71,20 +73,40 @@ export const SearchStudentForm = ({
     e.preventDefault();
     void executeSearch(false);
   };
+
+  const handleClear = () => {
+    setFilters({ documento: '', nombre: '', year: '' });
+    onSearchStart();
+    fetchStudents({})
+      .then((data) => {
+        if (mountedRef.current && data) {
+          onSearchSuccess(data.estudiantes);
+        }
+      })
+      .catch((error) => {
+        console.error('Error clearing search:', error);
+      })
+      .finally(() => {
+        if (mountedRef.current) {
+          onSearchEnd();
+        }
+      });
+  };
+
   return (
     <div className="card">
       <h3 className="search-header">
         <Search size={20} /> Filtros de búsqueda
       </h3>
       <div className="search-info">
-        Ingrese el código o nombre del estudiante y seleccione una fecha para iniciar la búsqueda
+        Ingrese el código, nombre del estudiante o seleccione el año lectivo para iniciar la búsqueda
       </div>
 
       <form onSubmit={handleSubmit}>
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
             gap: '16px',
             alignItems: 'end',
           }}
@@ -105,15 +127,28 @@ export const SearchStudentForm = ({
               setFilters({ ...filters, nombre: e.target.value });
             }}
           />
-          <Input
-            label="Fecha"
-            type="date"
-            value={filters.date}
-            onChange={(e) => {
-              setFilters({ ...filters, date: e.target.value });
-            }}
-          />
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <div className="input-container">
+            <label className="input-label">Año Lectivo</label>
+            <select
+              value={filters.year}
+              onChange={(e) => {
+                setFilters({ ...filters, year: e.target.value });
+              }}
+              className="input-field"
+              style={{ cursor: 'pointer' }}
+            >
+              <option value="">Todos los años</option>
+              {years.map((y) => (
+                <option key={y} value={y.toString()}>
+                  {y}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+            <Button type="button" variant="outline" onClick={handleClear} disabled={loading}>
+              Limpiar
+            </Button>
             <Button type="submit" variant="primary" disabled={loading}>
               <Search size={16} style={{ marginRight: '8px' }} />
               Buscar

@@ -277,4 +277,14 @@ export const enrollmentApi = {
       },
     );
   },
+  registerEnrollment: async (payload: {
+    estudiante_id: number;
+    periodo_id: number;
+    anio: number;
+  }): Promise<{ matricula_id: number; valor_total: number }> => {
+    return fetchApi<{ matricula_id: number; valor_total: number }>('/enrollment/register', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
 };
