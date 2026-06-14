@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { EnrollmentDetail } from '@/pages/enrollment/EnrollmentDetailPage';
 
-type StudentDetailSearch = {
+interface StudentDetailSearch {
   year?: number;
-};
+}
 
 export const Route = createFileRoute('/dashboard/enrollment/student/$id/')({
   validateSearch: (search: Record<string, unknown>): StudentDetailSearch => {

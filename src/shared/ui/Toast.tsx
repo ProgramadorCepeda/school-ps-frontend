@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { AlertCircle, CheckCircle, Info, X } from 'lucide-react';
+import { ToastContext } from './ToastContext';
 
 type ToastType = 'success' | 'error' | 'warning' | 'info';
 
@@ -8,20 +9,6 @@ interface Toast {
   message: string;
   type: ToastType;
 }
-
-interface ToastContextType {
-  showToast: (message: string, type?: ToastType) => void;
-}
-
-const ToastContext = createContext<ToastContextType | undefined>(undefined);
-
-export const useToast = () => {
-  const context = useContext(ToastContext);
-  if (!context) {
-    throw new Error('useToast must be used within a ToastProvider');
-  }
-  return context;
-};
 
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -39,7 +26,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, []);
 
   return (
-    <ToastContext.Provider value={{ showToast }}>
+    <ToastContext value={{ showToast }}>
       {children}
       <div
         style={{
@@ -98,7 +85,9 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               <div style={{ flexShrink: 0 }}>{icon}</div>
               <div style={{ flexGrow: 1, wordBreak: 'break-word' }}>{toast.message}</div>
               <button
-                onClick={() => removeToast(toast.id)}
+                onClick={() => {
+                  removeToast(toast.id);
+                }}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -117,6 +106,6 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           );
         })}
       </div>
-    </ToastContext.Provider>
+    </ToastContext>
   );
 };

@@ -124,7 +124,14 @@ export const EnrollmentSearch = () => {
                   </td>
                   <td>{student.pagos_realizados.toString()}</td>
                   <td style={{ fontWeight: 600 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '8px',
+                      }}
+                    >
                       <span>${student.saldo_pendiente.toLocaleString()}</span>
                       {selectedStudent === student.estudiante_id && (
                         <Button
@@ -153,7 +160,6 @@ export const EnrollmentSearch = () => {
           </tbody>
         </table>
       </div>
-
 
       {/* Manual enrollment modal */}
       <ManualEnrollmentModal

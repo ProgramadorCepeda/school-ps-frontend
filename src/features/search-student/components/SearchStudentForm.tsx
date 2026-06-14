@@ -11,6 +11,9 @@ interface SearchStudentFormProps {
   onSearchEnd: () => void;
 }
 
+const currentYear = new Date().getFullYear();
+const years = [currentYear - 2, currentYear - 1, currentYear, currentYear + 1];
+
 export const SearchStudentForm = ({
   onSearchSuccess,
   onSearchStart,
@@ -19,9 +22,6 @@ export const SearchStudentForm = ({
   const { loading, fetchStudents } = useSearchStudents();
   const [filters, setFilters] = useState({ documento: '', nombre: '', year: '' });
   const mountedRef = useRef(true);
-
-  const currentYear = new Date().getFullYear();
-  const years = [currentYear - 2, currentYear - 1, currentYear, currentYear + 1];
 
   const executeSearch = useCallback(
     async (isInitial = false) => {
@@ -83,7 +83,7 @@ export const SearchStudentForm = ({
           onSearchSuccess(data.estudiantes);
         }
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error('Error clearing search:', error);
       })
       .finally(() => {
@@ -99,7 +99,8 @@ export const SearchStudentForm = ({
         <Search size={20} /> Filtros de búsqueda
       </h3>
       <div className="search-info">
-        Ingrese el código, nombre del estudiante o seleccione el año lectivo para iniciar la búsqueda
+        Ingrese el código, nombre del estudiante o seleccione el año lectivo para iniciar la
+        búsqueda
       </div>
 
       <form onSubmit={handleSubmit}>

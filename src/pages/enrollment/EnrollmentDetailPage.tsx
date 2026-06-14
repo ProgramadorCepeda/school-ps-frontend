@@ -215,7 +215,9 @@ export const EnrollmentDetail = () => {
           </div>
           <Button
             variant="primary"
-            onClick={handleAutoEnroll}
+            onClick={() => {
+              void handleAutoEnroll();
+            }}
             disabled={enrollLoading}
             style={{ marginTop: '8px' }}
           >
@@ -313,7 +315,13 @@ export const EnrollmentDetail = () => {
                       <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0 }}>
                         Concepto complementario
                         {comp.descuento > 0 && (
-                          <span style={{ color: 'var(--status-green)', marginLeft: '8px', fontWeight: 500 }}>
+                          <span
+                            style={{
+                              color: 'var(--status-green)',
+                              marginLeft: '8px',
+                              fontWeight: 500,
+                            }}
+                          >
                             (Descuento: -${comp.descuento.toLocaleString()})
                           </span>
                         )}
@@ -422,20 +430,32 @@ export const EnrollmentDetail = () => {
       {/* Custom Confirm Modal */}
       <Modal
         isOpen={isConfirmOpen}
-        onClose={() => setIsConfirmOpen(false)}
+        onClose={() => {
+          setIsConfirmOpen(false);
+        }}
         title="Confirmar Desvinculación"
         width={400}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-            ¿Está seguro de que desea desvincular el concepto{' '}
-            <strong>"{confirmData?.name}"</strong>? Esta acción no se puede deshacer.
+            ¿Está seguro de que desea desvincular el concepto <strong>"{confirmData?.name}"</strong>
+            ? Esta acción no se puede deshacer.
           </p>
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-            <Button variant="secondary" onClick={() => setIsConfirmOpen(false)}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setIsConfirmOpen(false);
+              }}
+            >
               Cancelar
             </Button>
-            <Button variant="primary" onClick={handleConfirmUnlink}>
+            <Button
+              variant="primary"
+              onClick={() => {
+                void handleConfirmUnlink();
+              }}
+            >
               Desvincular
             </Button>
           </div>

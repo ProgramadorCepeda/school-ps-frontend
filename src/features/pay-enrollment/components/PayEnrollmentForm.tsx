@@ -82,7 +82,10 @@ export const PayEnrollmentForm = ({ balance, onPaymentSuccess }: PayEnrollmentFo
       }
 
       if (balance.pagos_realizados === 3 && totalSum !== balance.total_pendiente) {
-        showToast(`Para el cuarto pago, debe cancelar la totalidad del saldo pendiente ($${balance.total_pendiente.toLocaleString('es-CO')}).`, 'error');
+        showToast(
+          `Para el cuarto pago, debe cancelar la totalidad del saldo pendiente ($${balance.total_pendiente.toLocaleString('es-CO')}).`,
+          'error',
+        );
         return;
       }
 
@@ -110,13 +113,17 @@ export const PayEnrollmentForm = ({ balance, onPaymentSuccess }: PayEnrollmentFo
   if (balance.pagos_realizados >= 4) {
     return (
       <div className="card" style={{ border: '1px solid var(--status-red-bg)' }}>
-        <h3 className="search-header" style={{ color: 'var(--status-red)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <h3
+          className="search-header"
+          style={{ color: 'var(--status-red)', display: 'flex', alignItems: 'center', gap: '8px' }}
+        >
           <AlertCircle size={20} /> Límite de Pagos Parciales Alcanzado
         </h3>
         <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
           Se ha alcanzado el límite máximo de 4 pagos para esta matrícula. Actualmente hay{' '}
           <strong>{balance.pagos_realizados}</strong> pagos registrados y un saldo restante de{' '}
-          <strong>${balance.total_pendiente.toLocaleString('es-CO')}</strong>. Comuníquese con administración.
+          <strong>${balance.total_pendiente.toLocaleString('es-CO')}</strong>. Comuníquese con
+          administración.
         </p>
       </div>
     );
@@ -157,7 +164,8 @@ export const PayEnrollmentForm = ({ balance, onPaymentSuccess }: PayEnrollmentFo
               fontWeight: 500,
             }}
           >
-            Este es el cuarto pago. Por política del sistema, debe cancelar la totalidad del saldo pendiente. Los montos han sido bloqueados a su valor restante.
+            Este es el cuarto pago. Por política del sistema, debe cancelar la totalidad del saldo
+            pendiente. Los montos han sido bloqueados a su valor restante.
           </div>
         )}
 
@@ -196,7 +204,14 @@ export const PayEnrollmentForm = ({ balance, onPaymentSuccess }: PayEnrollmentFo
               border: '1px solid var(--border)',
             }}
           >
-            <h4 style={{ margin: '0 0 12px 0', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-main)' }}>
+            <h4
+              style={{
+                margin: '0 0 12px 0',
+                fontSize: '0.9rem',
+                fontWeight: 600,
+                color: 'var(--text-main)',
+              }}
+            >
               Desglose del Pago a Registrar
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -206,14 +221,20 @@ export const PayEnrollmentForm = ({ balance, onPaymentSuccess }: PayEnrollmentFo
                 return (
                   <div
                     key={item.id}
-                    style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontSize: '0.875rem',
+                    }}
                   >
                     <span style={{ color: 'var(--text-secondary)' }}>{item.label}</span>
-                    <span style={{ fontWeight: 500, color: 'var(--text-main)' }}>${amount.toLocaleString('es-CO')}</span>
+                    <span style={{ fontWeight: 500, color: 'var(--text-main)' }}>
+                      ${amount.toLocaleString('es-CO')}
+                    </span>
                   </div>
                 );
               })}
-              
+
               <div
                 style={{
                   borderTop: '1px solid var(--border)',
