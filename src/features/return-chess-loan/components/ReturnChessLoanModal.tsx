@@ -13,13 +13,14 @@ interface Props {
 }
 
 export const ReturnChessLoanModal = ({ isOpen, loan, onClose, onSuccess }: Props) => {
-  const [piezasDevueltas, setPiezasDevueltas] = useState(32);
+  const piezasEsperadas = loan?.piezas_totales ?? 32;
+  const [piezasDevueltas, setPiezasDevueltas] = useState(piezasEsperadas);
   const [observacion, setObservacion] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<{ mensaje: string; novedad_creada: boolean } | null>(null);
 
-  const incomplete = piezasDevueltas < 32;
+  const incomplete = piezasDevueltas < piezasEsperadas;
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -28,13 +29,13 @@ export const ReturnChessLoanModal = ({ isOpen, loan, onClose, onSuccess }: Props
       setLoading(true);
       setError('');
       const finalObservacion =
-        observacion || (piezasDevueltas === 32 ? 'Devuelto en buen estado' : '');
+        observacion || (piezasDevueltas === piezasEsperadas ? 'Devuelto en buen estado' : '');
       const res = await returnChessBorrow(loan.id, {
         conteo_piezas: piezasDevueltas,
         observacion: finalObservacion,
       });
       setResult({ mensaje: res.mensaje, novedad_creada: res.novedad_creada });
-      setPiezasDevueltas(32);
+      setPiezasDevueltas(piezasEsperadas);
       setObservacion('');
       onSuccess();
     } catch (err: unknown) {
@@ -88,7 +89,7 @@ export const ReturnChessLoanModal = ({ isOpen, loan, onClose, onSuccess }: Props
           </Button>
         </div>
       ) : (
-        <>
+        <div key={`${String(isOpen)}-${String(loan?.id)}`}>
           {loan && (
             <div className="modal-item-info">
               Préstamo #{loan.id} — <strong>{loan.nombre_articulo}</strong>
@@ -108,14 +109,14 @@ export const ReturnChessLoanModal = ({ isOpen, loan, onClose, onSuccess }: Props
             style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
           >
             <Input
-              label="Piezas Devueltas (máx 32)"
+              label={`Piezas Devueltas (máx ${String(piezasEsperadas)})`}
               type="number"
               value={piezasDevueltas}
               onChange={(e) => {
                 setPiezasDevueltas(Number(e.target.value));
               }}
               min={0}
-              max={32}
+              max={piezasEsperadas}
               required
               disabled={loading}
             />
@@ -148,7 +149,7 @@ export const ReturnChessLoanModal = ({ isOpen, loan, onClose, onSuccess }: Props
               </Button>
             </div>
           </form>
-        </>
+        </div>
       )}
     </Modal>
   );
