@@ -97,7 +97,6 @@ export const testsEntityApi = {
         anio: new Date().getFullYear(),
         valor,
         estado_complemento: 'Activo',
-        uso_matricula: false,
       }),
     });
   },

@@ -34,7 +34,6 @@ export const AssignComplementaryModal = ({
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newConceptName, setNewConceptName] = useState('');
   const [newConceptValue, setNewConceptValue] = useState('');
-  const [newConceptUsoMatricula, setNewConceptUsoMatricula] = useState(true);
   const [createLoading, setCreateLoading] = useState(false);
 
   const loadConcepts = useCallback(async () => {
@@ -62,7 +61,6 @@ export const AssignComplementaryModal = ({
         setDescuento('0');
         setNewConceptName('');
         setNewConceptValue('');
-        setNewConceptUsoMatricula(true);
       }, 0);
       return () => {
         clearTimeout(timer);
@@ -86,7 +84,6 @@ export const AssignComplementaryModal = ({
         anio: year,
         valor: parsedValue,
         estado_complemento: 'Activo',
-        uso_matricula: newConceptUsoMatricula,
       });
 
       const newConcept: ComplementaryConcept = {
@@ -95,7 +92,6 @@ export const AssignComplementaryModal = ({
         anio: year,
         valor: parsedValue,
         estado_complemento: 'Activo',
-        uso_matricula: newConceptUsoMatricula,
       };
 
       setConcepts((prev) => [...prev, newConcept]);
@@ -103,7 +99,6 @@ export const AssignComplementaryModal = ({
       setShowCreateForm(false);
       setNewConceptName('');
       setNewConceptValue('');
-      setNewConceptUsoMatricula(false);
       showToast('Concepto complementario creado exitosamente en el catálogo.', 'success');
     } catch (err: unknown) {
       console.error(err);
@@ -294,35 +289,6 @@ export const AssignComplementaryModal = ({
               }}
               disabled={createLoading}
             />
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 0' }}>
-              <input
-                id="usoMatriculaCheck"
-                type="checkbox"
-                checked={newConceptUsoMatricula}
-                onChange={(e) => {
-                  setNewConceptUsoMatricula(e.target.checked);
-                }}
-                disabled={createLoading}
-                style={{
-                  width: '16px',
-                  height: '16px',
-                  cursor: 'pointer',
-                  accentColor: 'var(--brand-primary)',
-                }}
-              />
-              <label
-                htmlFor="usoMatriculaCheck"
-                style={{
-                  fontSize: '0.875rem',
-                  color: 'var(--text-main)',
-                  cursor: 'pointer',
-                  userSelect: 'none',
-                }}
-              >
-                Cobrar automáticamente en matrículas nuevas (uso_matricula)
-              </label>
-            </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
               <button

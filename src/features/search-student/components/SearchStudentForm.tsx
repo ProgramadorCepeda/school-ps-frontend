@@ -5,14 +5,13 @@ import type { StudentSearchItem } from '@/entities/student/model/types';
 import { Button } from '@/shared/ui/atoms/Button';
 import { Input } from '@/shared/ui/atoms/Input';
 
+import { enrollmentApi } from '@/entities/student/api/enrollment';
+
 interface SearchStudentFormProps {
   onSearchSuccess: (students: StudentSearchItem[]) => void;
   onSearchStart: () => void;
   onSearchEnd: () => void;
 }
-
-const currentYear = new Date().getFullYear();
-const years = [currentYear - 2, currentYear - 1, currentYear, currentYear + 1];
 
 export const SearchStudentForm = ({
   onSearchSuccess,
@@ -21,6 +20,7 @@ export const SearchStudentForm = ({
 }: SearchStudentFormProps) => {
   const { loading, fetchStudents } = useSearchStudents();
   const [filters, setFilters] = useState({ documento: '', nombre: '', year: '' });
+  const [years, setYears] = useState<number[]>(() => [new Date().getFullYear()]);
   const mountedRef = useRef(true);
 
   const executeSearch = useCallback(
@@ -63,6 +63,21 @@ export const SearchStudentForm = ({
 
   useEffect(() => {
     mountedRef.current = true;
+
+    enrollmentApi
+      .getComplementaryConcepts()
+      .then((concepts) => {
+        if (mountedRef.current) {
+          const dbYears = concepts.map((c) => c.anio);
+          const uniqueYears = Array.from(new Set([...dbYears, new Date().getFullYear()]));
+          uniqueYears.sort((a, b) => b - a);
+          setYears(uniqueYears);
+        }
+      })
+      .catch((err: unknown) => {
+        console.error('Error fetching academic years:', err);
+      });
+
     void executeSearch(true);
     return () => {
       mountedRef.current = false;

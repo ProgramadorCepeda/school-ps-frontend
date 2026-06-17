@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback, type ReactNode } from 'react';
 import { AlertCircle, CheckCircle, Info, X } from 'lucide-react';
 import { ToastContext } from './ToastContext';
 
@@ -10,7 +10,7 @@ interface Toast {
   type: ToastType;
 }
 
-export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const showToast = useCallback((message: string, type: ToastType = 'info') => {

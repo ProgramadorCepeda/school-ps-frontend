@@ -131,7 +131,6 @@ export interface ComplementaryConcept {
   anio: number;
   valor: number;
   estado_complemento: string;
-  uso_matricula: boolean;
 }
 
 export interface CreateComplementaryPayload {
@@ -139,7 +138,6 @@ export interface CreateComplementaryPayload {
   anio: number;
   valor: number;
   estado_complemento: string;
-  uso_matricula: boolean;
 }
 
 export const enrollmentApi = {
